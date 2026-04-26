@@ -1,134 +1,602 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iBlog - Heaven for bloggers</title>
-    <link rel="stylesheet" href="css/utils.css">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/mobile.css" />
-    
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover" />
+  <title>iBlog – Search Results</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link rel="stylesheet" href="css/utils.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/mobile.css" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(145deg, #fff8f0 0%, #ffe6d5 100%);
+      color: #2c3e4e;
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 30% 40%, rgba(230,126,34,0.08) 0%, rgba(255,245,230,0) 70%);
+      pointer-events: none;
+      z-index: -2;
+      animation: slowDrift 20s infinite alternate;
+    }
+    @keyframes slowDrift {
+      0% { transform: scale(1) translate(0, 0); opacity: 0.5; }
+      100% { transform: scale(1.2) translate(2%, 1%); opacity: 0.9; }
+    }
+    .max-width-1 {
+      max-width: 1280px;
+      width: 90%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .m-auto {
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .navigation {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.8rem 1.5rem;
+      background: rgba(255, 250, 245, 0.85);
+      backdrop-filter: blur(14px);
+      border-radius: 80px;
+      margin-top: 1.2rem;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255,245,230,0.8);
+      position: relative;
+    }
+    .navigation:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 20px 35px rgba(0, 0, 0, 0.1);
+    }
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      width: 100%;
+      justify-content: space-between;
+    }
+    .nav-left ul {
+      display: flex;
+      gap: 1.2rem;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .nav-left ul li a {
+      text-decoration: none;
+      color: #2c3e4e;
+      font-weight: 600;
+      transition: 0.2s;
+      position: relative;
+      font-size: 0.95rem;
+    }
+    .nav-left ul li a::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 0;
+      width: 0;
+      height: 2.5px;
+      background: linear-gradient(90deg, #e67e22, #f39c12);
+      transition: width 0.25s ease;
+    }
+    .nav-left ul li a:hover::after { width: 100%; }
+    .nav-left ul li a:hover { color: #e67e22; }
+    .menu-icon {
+      display: none;
+      font-size: 1.6rem;
+      cursor: pointer;
+      color: #e67e22;
+      background: none;
+      border: none;
+    }
+    .nav-right form {
+      display: flex;
+      gap: 0.6rem;
+    }
+    .form-input {
+      padding: 0.6rem 1.2rem;
+      border-radius: 50px;
+      border: 1px solid #ffe0cc;
+      background: white;
+      width: 220px;
+      outline: none;
+      font-size: 0.9rem;
+    }
+    .form-input:focus {
+      border-color: #e67e22;
+      box-shadow: 0 0 0 3px rgba(230,126,34,0.2);
+    }
+    .btn {
+      background: linear-gradient(95deg, #e67e22, #f39c12);
+      border: none;
+      color: white;
+      padding: 0.5rem 1.4rem;
+      border-radius: 50px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .btn:hover {
+      transform: scale(0.96);
+      background: linear-gradient(95deg, #d35400, #e67e22);
+      box-shadow: 0 4px 12px rgba(230,126,34,0.4);
+    }
+    hr {
+      opacity: 0.3;
+      margin: 1rem 0;
+    }
+    .home-articles {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(6px);
+      border-radius: 2rem;
+      padding: 2rem;
+      margin: 2rem auto;
+      border: 1px solid rgba(230,126,34,0.2);
+      animation: fadeSlideUp 0.6s ease-out;
+    }
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .home-articles h2 {
+      font-size: clamp(1.6rem, 5vw, 2.2rem);
+      margin-bottom: 1.5rem;
+      border-left: 6px solid #e67e22;
+      padding-left: 1rem;
+      font-weight: 700;
+      word-break: break-word;
+    }
+    .not-found-msg {
+      background: rgba(255, 235, 215, 0.8);
+      border-left: 5px solid #e67e22;
+      padding: 1rem 1.5rem;
+      border-radius: 20px;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .not-found-msg i {
+      font-size: 2rem;
+      color: #e67e22;
+    }
+    .not-found-msg p {
+      font-size: 1.1rem;
+      margin: 0;
+    }
+    .home-article {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+      padding: 1rem 0;
+      border-bottom: 1px solid rgba(230,126,34,0.2);
+      transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+      flex-wrap: wrap;
+    }
+    .home-article:hover {
+      transform: translateX(8px);
+      background: rgba(255,255,245,0.5);
+      border-radius: 20px;
+      padding-left: 0.5rem;
+    }
+    .home--article-img img {
+      width: 200px;
+      height: 140px;
+      object-fit: cover;
+      border-radius: 20px;
+      transition: 0.3s;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+    .home--article-img img:hover {
+      transform: scale(1.02);
+    }
+    .home-article-content a {
+      text-decoration: none;
+    }
+    .home-article-content h3 {
+      color: #2c3e4e;
+      font-size: 1.4rem;
+      margin-bottom: 0.5rem;
+    }
+    .home-article-content h3:hover {
+      color: #e67e22;
+    }
+    .footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      background: #2c3e4e;
+      color: #ecf0f1;
+      margin-top: 2rem;
+      border-radius: 3rem 3rem 0 0;
+      font-size: 0.9rem;
+    }
+    .footer a {
+      color: #f39c12;
+    }
+    #ai-btn {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      width: 55px;
+      height: 55px;
+      background: radial-gradient(circle at 30% 20%, #e67e22, #b64900);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(230,126,34,0.4);
+      z-index: 1000;
+      border: 2px solid white;
+      transition: all 0.25s;
+    }
+    #ai-btn:hover {
+      transform: scale(1.08);
+      box-shadow: 0 12px 25px rgba(230,126,34,0.6);
+    }
+    #ai-box {
+      position: fixed;
+      bottom: 85px;
+      left: 20px;
+      width: 340px;
+      max-width: calc(100vw - 40px);
+      background: rgba(255, 255, 250, 0.98);
+      backdrop-filter: blur(20px);
+      border-radius: 28px;
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.3);
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      z-index: 1001;
+      font-family: 'Inter', sans-serif;
+      animation: fadeScale 0.2s ease;
+    }
+    @keyframes fadeScale {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    #ai-box::before {
+      content: "🐱 Kittu AI Assistant";
+      padding: 12px 16px;
+      background: linear-gradient(95deg, #e67e22, #f39c12);
+      color: white;
+      font-weight: 700;
+      font-size: 0.9rem;
+      display: block;
+    }
+    #chat {
+      height: 340px;
+      overflow-y: auto;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: #fffcf8;
+    }
+    .message {
+      display: flex;
+      flex-direction: column;
+      max-width: 88%;
+      animation: slideMsg 0.2s ease;
+    }
+    @keyframes slideMsg {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .message.user { align-self: flex-end; }
+    .message.ai { align-self: flex-start; }
+    .bubble {
+      padding: 8px 14px;
+      border-radius: 22px;
+      font-size: 0.85rem;
+      background: white;
+      border: 1px solid #f0e0d2;
+    }
+    .user .bubble {
+      background: #e67e22;
+      color: white;
+      border: none;
+      border-bottom-right-radius: 5px;
+    }
+    .ai .bubble {
+      background: #ffffff;
+      border-bottom-left-radius: 5px;
+    }
+    .timestamp {
+      font-size: 0.6rem;
+      color: #b0a89c;
+      margin: 3px 10px 0;
+    }
+    .input-wrapper {
+      display: flex;
+      border-top: 1px solid #f0dfcf;
+      background: white;
+    }
+    #ai-box input {
+      flex: 1;
+      border: none;
+      padding: 12px 14px;
+      outline: none;
+      background: #fffaf5;
+    }
+    #ai-box button {
+      border: none;
+      background: #e67e22;
+      color: white;
+      font-weight: 700;
+      padding: 0 18px;
+      cursor: pointer;
+    }
+    #ai-box button:hover { background: #d35400; }
+    .typing span {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background: #e67e22;
+      border-radius: 50%;
+      margin: 0 2px;
+      animation: wave 1.2s infinite;
+    }
+    @keyframes wave {
+      0%,60%,100% { transform: translateY(0); opacity: 0.5; }
+      30% { transform: translateY(-4px); opacity: 1; }
+    }
+    @media (max-width: 768px) {
+      .menu-icon { display: block; }
+      .nav-left ul {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        background: rgba(255, 250, 245, 0.95);
+        backdrop-filter: blur(14px);
+        position: absolute;
+        top: 70px;
+        left: 0;
+        right: 0;
+        border-radius: 32px;
+        padding: 1.2rem;
+        gap: 1rem;
+        z-index: 100;
+        box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+      }
+      .nav-left ul.show { display: flex; }
+      .nav-left { width: 100%; justify-content: space-between; }
+      .nav-right { width: 100%; margin-top: 0.8rem; }
+      .nav-right form { justify-content: center; flex-wrap: wrap; }
+      .form-input { width: 100%; }
+      .navigation { flex-wrap: wrap; border-radius: 2rem; padding: 1rem; }
+      .home-article { flex-direction: column; text-align: center; }
+      .home--article-img img { width: 100%; max-width: 280px; height: auto; }
+      .home-articles { padding: 1.5rem; }
+      #ai-box { left: 12px; bottom: 78px; width: calc(100vw - 30px); max-width: 320px; }
+      #ai-btn { left: 12px; bottom: 12px; width: 48px; height: 48px; font-size: 24px; }
+    }
+  </style>
 </head>
 <body>
-    <nav class="navigation max-width-1 m-auto">
-      <div class="nav-left">
-        <a href="index.html">
-          <span><img src="img/logo.png" alt="logo" width="94px" /></span>
-        </a>
-        <ul>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="./">About</a></li>
-          <li><a href="contact.html">Contact</a></li>
-        </ul>
-      </div>
-      <div class="nav-right">
-        <form action="search.html" method="get">
-          <input
-            class="form-input"
-            type="text"
-            name="query"
-            placeholder="Article Search"
-          />
-          <button class="btn">Search</button>
-        </form>
-      </div>
-    </nav>
-    
-    
-    <div class="max-width-1 m-auto"><hr></div>
-    <div class="home-articles max-width-1 m-auto font2">
-        <h2>Search result for 'query'</h2>
-        <div class="home-article">
-        <div class="home--article-img">
-           <a href="blogpost.html"><img src="img/img2.avif" alt="article" /></a>
-          
-        </div>
-        <div class="home-article-content font1">
-          <a href="blogpost.html"
-            ><h3>Why Everyone Should Start Blogging in 2025</h3></a>
 
-          <div> Author - Sam Paul</div>
-          <span>07 January | 6 min read</span>
-        </div>
-      </div>
-      <div class="home-article">
-        <div class="home--article-img">
-           <a href="blogpost1.html"><img src="img/1.png" alt="article" /></a>
-        </div>
-        <div class="home-article-content font1">
-          <a href="blogpost1.html"
-            ><h3>Role of Data Analytics in Upcoming Future</h3></a
-          >
+<nav class="navigation max-width-1 m-auto">
+  <div class="nav-left">
+    <a href="index.html"><span><img src="img/logo.png" alt="logo" width="50px" style="border-radius:12px" /></span></a>
+    <button class="menu-icon" id="menuToggle"><i class="fas fa-bars"></i></button>
+    <ul id="navMenu">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="create-blog.html">Create Blog</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="blogs.html">All Blogs</a></li>
+    </ul>
+  </div>
+  <div class="nav-right">
+    <form action="search.html" method="get">
+      <input class="form-input" type="text" name="query" placeholder="Article Search" id="searchInput" value="" />
+      <button class="btn" type="submit">Search</button>
+    </form>
+  </div>
+</nav>
 
-          <div>Author - Sam Paul</div>
-          <span>28 September | 6 min read</span>
-        </div>
-      </div>
-      <div class="home-article">
-        <div class="home--article-img">
-          <a href="blogpost2.html"><img src="img/6.png" alt="article" /></a>
-        </div>
-        <div class="home-article-content font1">
-          <a href="blogpost2.html"
-            ><h3>Importance of Forests / Saving Forests</h3></a
-          >
+<div class="max-width-1 m-auto"><hr style="opacity:0.3" /></div>
 
-          <div>Author - Robert Forest</div>
-          <span>17 March | 6 min read</span>
-        </div>
-      </div>
-      <div class="home-article">
-        <div class="home--article-img">
-           <a href="blogpost3.html"><img src="img/2.png" alt="article" /></a>
-        </div>
-        <div class="home-article-content font1">
-          <a href="blogpost3.html"
-            ><h3>Importance of Beams and Structural Design in Modern Buildings</h3></a
-          >
-
-          <div>Author - Xi Jinpin</div>
-          <span>30 December | 6 min read</span>
-        </div>
-      </div>
-      <div class="home-article">
-        <div class="home--article-img">
-           <a href="blogpost4.html"><img src="img/4.png" alt="article" /></a>
-        </div>
-        <div class="home-article-content font1">
-          <a href="blogpost4.html"
-            ><h3>The Importance of Outings and Vacations in a Busy Life</h3></a
-          >
-
-          <div>Author - Melon Benet</div>
-          <span>15 January | 6 min read</span>
-        </div>
-      </div>
-        
-
-
+<div class="home-articles max-width-1 m-auto font2">
+  <div id="dynamicHeading"></div>
+  <div id="noResultsBanner" style="display: none;" class="not-found-msg">
+    <i class="fas fa-search"></i>
+    <p><strong>🔍 Search not found.</strong> No articles match your query. Here are all available blogs:</p>
+  </div>
+  <div id="articlesContainer">
+    <!-- All articles (static) -->
+    <div class="home-article" data-title="Why Everyone Should Start Blogging in 2025" data-author="Sam Paul">
+      <div class="home--article-img"><a href="blogpost.html"><img src="img/img2.avif" alt="blogging" /></a></div>
+      <div class="home-article-content"><a href="blogpost.html"><h3>Why Everyone Should Start Blogging in 2025</h3></a><div>Author - Sam Paul</div><span>07 January | 6 min read</span></div>
     </div>
-    <div class="footer ">
-        <p>Copyright &copy; iBlog.com</p>
-         <a href="./">Vector Credits:Vecteezy</a>
-        
-
+    <div class="home-article" data-title="Role of Data Analytics in Upcoming Future" data-author="Sam Paul">
+      <div class="home--article-img"><a href="blogpost1.html"><img src="img/1.png" alt="data analytics" /></a></div>
+      <div class="home-article-content"><a href="blogpost1.html"><h3>Role of Data Analytics in Upcoming Future</h3></a><div>Author - Sam Paul</div><span>28 September | 6 min read</span></div>
     </div>
-    <script>
-const params = new URLSearchParams(window.location.search);
-const query = params.get("query");
+    <div class="home-article" data-title="Importance of Forests / Saving Forests" data-author="Robert Forest">
+      <div class="home--article-img"><a href="blogpost2.html"><img src="img/6.png" alt="forests" /></a></div>
+      <div class="home-article-content"><a href="blogpost2.html"><h3>Importance of Forests / Saving Forests</h3></a><div>Author - Robert Forest</div><span>17 March | 6 min read</span></div>
+    </div>
+    <div class="home-article" data-title="Importance of Beams and Structural Design in Modern Buildings" data-author="Xi Jinpin">
+      <div class="home--article-img"><a href="blogpost3.html"><img src="img/2.png" alt="structural design" /></a></div>
+      <div class="home-article-content"><a href="blogpost3.html"><h3>Importance of Beams and Structural Design in Modern Buildings</h3></a><div>Author - Xi Jinpin</div><span>30 December | 6 min read</span></div>
+    </div>
+    <div class="home-article" data-title="The Importance of Outings and Vacations in a Busy Life" data-author="Melon Benet">
+      <div class="home--article-img"><a href="blogpost4.html"><img src="img/4.png" alt="vacations" /></a></div>
+      <div class="home-article-content"><a href="blogpost4.html"><h3>The Importance of Outings and Vacations in a Busy Life</h3></a><div>Author - Melon Benet</div><span>15 January | 6 min read</span></div>
+    </div>
+  </div>
+</div>
 
-// heading change
-document.querySelector("h2").innerText = `Search result for '${query}'`;
+<div class="footer">
+  <p>Copyright &copy; iBlog.com &nbsp;|&nbsp; <a href="./">Vector Credits: Vecteezy</a></p>
+</div>
 
-const articles = document.querySelectorAll(".home-article");
+<div id="ai-btn">🤖</div>
+<div id="ai-box">
+  <div id="chat"></div>
+  <div class="input-wrapper">
+    <input id="msg" placeholder="Ask Kittu AI..." />
+    <button onclick="askAI()">Send</button>
+  </div>
+</div>
 
-articles.forEach(article => {
-  const title = article.innerText.toLowerCase();
-  
-  if (!title.includes(query.toLowerCase())) {
-    article.style.display = "none";
+<script>
+  // Hamburger menu
+  const menuToggle = document.getElementById('menuToggle');
+  const navMenu = document.getElementById('navMenu');
+  menuToggle.addEventListener('click', () => navMenu.classList.toggle('show'));
+  document.querySelectorAll('#navMenu a').forEach(link => {
+    link.addEventListener('click', () => navMenu.classList.remove('show'));
+  });
+
+  // Search logic
+  const urlParams = new URLSearchParams(window.location.search);
+  const query = urlParams.get('query');
+  const headingDiv = document.getElementById('dynamicHeading');
+  const articles = document.querySelectorAll('.home-article');
+  const noResultsBanner = document.getElementById('noResultsBanner');
+
+  function escapeHtml(str) {
+    return str.replace(/[&<>]/g, function(m) {
+      if (m === '&') return '&amp;';
+      if (m === '<') return '&lt;';
+      if (m === '>') return '&gt;';
+      return m;
+    });
   }
-});
+
+  if (query && query.trim() !== '') {
+    // Show heading with query
+    headingDiv.innerHTML = `<h2>🔍 Search results for “${escapeHtml(query)}”</h2>`;
+    let matchCount = 0;
+    articles.forEach(article => {
+      const title = article.getAttribute('data-title') || '';
+      const author = article.getAttribute('data-author') || '';
+      const searchText = (title + ' ' + author).toLowerCase();
+      if (searchText.includes(query.toLowerCase())) {
+        article.style.display = 'flex';
+        matchCount++;
+      } else {
+        article.style.display = 'none';
+      }
+    });
+    if (matchCount === 0) {
+      noResultsBanner.style.display = 'flex';
+      // Show all articles again so user can see available content
+      articles.forEach(article => {
+        article.style.display = 'flex';
+      });
+    } else {
+      noResultsBanner.style.display = 'none';
+    }
+  } else {
+    headingDiv.innerHTML = `<h2>📚 All Articles</h2>`;
+    articles.forEach(article => article.style.display = 'flex');
+    noResultsBanner.style.display = 'none';
+  }
+
+  // Pre-fill search input with the query
+  const searchInput = document.getElementById('searchInput');
+  if (searchInput && query) {
+    searchInput.value = query;
+  }
+
+  // AI Assistant (same as before)
+  const AI_BTN = document.getElementById("ai-btn");
+  const AI_BOX = document.getElementById("ai-box");
+  const CHAT_DIV = document.getElementById("chat");
+  const MSG_INPUT = document.getElementById("msg");
+
+  AI_BTN.onclick = () => {
+    AI_BOX.style.display = AI_BOX.style.display === "flex" ? "none" : "flex";
+    if (AI_BOX.style.display === "flex" && CHAT_DIV.children.length === 0) {
+      addMsgToChat("👋 Hi! I'm Kittu AI. Ask me about any blog topic or for help finding articles.", "ai");
+    }
+  };
+
+  function addMsgToChat(text, sender) {
+    const msgDiv = document.createElement("div");
+    msgDiv.className = `message ${sender}`;
+    const bubble = document.createElement("div");
+    bubble.className = "bubble";
+    bubble.innerText = text;
+    const timeSpan = document.createElement("div");
+    timeSpan.className = "timestamp";
+    timeSpan.innerText = new Date().toLocaleTimeString([], { hour: '2-digit', minute:'2-digit' });
+    msgDiv.appendChild(bubble);
+    msgDiv.appendChild(timeSpan);
+    CHAT_DIV.appendChild(msgDiv);
+    CHAT_DIV.scrollTop = CHAT_DIV.scrollHeight;
+  }
+
+  let thinkingEl = null;
+  function showThinking() {
+    if (thinkingEl) thinkingEl.remove();
+    thinkingEl = document.createElement("div");
+    thinkingEl.className = "message ai";
+    thinkingEl.id = "typingAnim";
+    thinkingEl.innerHTML = `<div class="bubble"><div class="typing"><span></span><span></span><span></span> thinking...</div></div>`;
+    CHAT_DIV.appendChild(thinkingEl);
+    CHAT_DIV.scrollTop = CHAT_DIV.scrollHeight;
+  }
+  function hideThinking() { if (thinkingEl) thinkingEl.remove(); thinkingEl = null; }
+
+  async function askAI() {
+    const msg = MSG_INPUT.value.trim();
+    if (!msg) return;
+    addMsgToChat(msg, "user");
+    MSG_INPUT.value = "";
+    MSG_INPUT.disabled = true;
+    showThinking();
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 45000);
+      const res = await fetch("http://localhost:5000/api/ask-ai", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: msg }),
+        signal: controller.signal
+      });
+      clearTimeout(timeout);
+      const data = await res.json();
+      hideThinking();
+      addMsgToChat(data.reply || "No response from AI.", "ai");
+    } catch (err) {
+      hideThinking();
+      addMsgToChat("❌ Cannot reach backend. Start python ai_backend.py", "ai");
+    } finally {
+      MSG_INPUT.disabled = false;
+      MSG_INPUT.focus();
+    }
+  }
+
+  MSG_INPUT.addEventListener("keypress", (e) => { if (e.key === "Enter") askAI(); });
+  window.addEventListener("click", (e) => {
+    if (!AI_BOX.contains(e.target) && e.target !== AI_BTN && AI_BOX.style.display === "flex") {
+      AI_BOX.style.display = "none";
+    }
+  });
 </script>
 </body>
 </html>

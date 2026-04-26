@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover" />
   <title>iBlog – All Blogs</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
@@ -10,13 +10,17 @@
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/mobile.css" />
   <style>
-    /* same base styles as contact page – include all the glassmorphic, animations, ai button */
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
     body {
       font-family: 'Inter', sans-serif;
       background: linear-gradient(145deg, #fff8f0 0%, #ffe6d5 100%);
       color: #2c3e4e;
       scroll-behavior: smooth;
+      overflow-x: hidden;
     }
     body::before {
       content: '';
@@ -34,13 +38,21 @@
       0% { transform: scale(1) translate(0, 0); opacity: 0.5; }
       100% { transform: scale(1.2) translate(2%, 1%); opacity: 0.9; }
     }
-    .max-width-1 { max-width: 1280px; }
-    .m-auto { margin-left: auto; margin-right: auto; }
+    .max-width-1 {
+      max-width: 1280px;
+      width: 90%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .m-auto {
+      margin-left: auto;
+      margin-right: auto;
+    }
     .navigation {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0.8rem 2rem;
+      padding: 0.8rem 1.5rem;
       background: rgba(255, 250, 245, 0.85);
       backdrop-filter: blur(14px);
       border-radius: 80px;
@@ -48,16 +60,33 @@
       box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
       transition: all 0.3s ease;
       border: 1px solid rgba(255,245,230,0.8);
+      position: relative;
     }
-    .navigation:hover { transform: translateY(-3px); box-shadow: 0 20px 35px rgba(0, 0, 0, 0.1); }
-    .nav-left { display: flex; align-items: center; gap: 2rem; }
-    .nav-left ul { display: flex; gap: 1.8rem; list-style: none; }
+    .navigation:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 20px 35px rgba(0, 0, 0, 0.1);
+    }
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      width: 100%;
+      justify-content: space-between;
+    }
+    .nav-left ul {
+      display: flex;
+      gap: 1.2rem;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
     .nav-left ul li a {
       text-decoration: none;
       color: #2c3e4e;
       font-weight: 600;
       transition: 0.2s;
       position: relative;
+      font-size: 0.95rem;
     }
     .nav-left ul li a::after {
       content: '';
@@ -70,15 +99,30 @@
       transition: width 0.25s ease;
       border-radius: 3px;
     }
-    .nav-left ul li a:hover::after { width: 100%; }
-    .nav-left ul li a:hover { color: #e67e22; }
-    .nav-right form { display: flex; gap: 0.6rem; }
+    .nav-left ul li a:hover::after {
+      width: 100%;
+    }
+    .nav-left ul li a:hover {
+      color: #e67e22;
+    }
+    .menu-icon {
+      display: none;
+      font-size: 1.6rem;
+      cursor: pointer;
+      color: #e67e22;
+      background: none;
+      border: none;
+    }
+    .nav-right form {
+      display: flex;
+      gap: 0.6rem;
+    }
     .form-input {
       padding: 0.6rem 1.2rem;
       border-radius: 50px;
       border: 1px solid #ffe0cc;
       background: white;
-      width: 240px;
+      width: 200px;
       outline: none;
       font-size: 0.9rem;
       transition: 0.2s;
@@ -102,8 +146,13 @@
       background: linear-gradient(95deg, #d35400, #e67e22);
       box-shadow: 0 4px 12px rgba(230,126,34,0.4);
     }
+    hr {
+      opacity: 0.3;
+      margin: 1rem 0;
+    }
     .blogs-container {
       max-width: 1100px;
+      width: 90%;
       margin: 2rem auto;
       animation: fadeUp 0.5s ease-out;
     }
@@ -112,7 +161,7 @@
       to { opacity: 1; transform: translateY(0); }
     }
     .blogs-container h2 {
-      font-size: 2rem;
+      font-size: clamp(1.6rem, 5vw, 2rem);
       margin-bottom: 1.5rem;
       border-left: 6px solid #e67e22;
       padding-left: 1rem;
@@ -134,7 +183,7 @@
     .blog-card h3 {
       color: #e67e22;
       margin-bottom: 0.5rem;
-      font-size: 1.6rem;
+      font-size: clamp(1.2rem, 4vw, 1.6rem);
     }
     .blog-meta {
       color: #7f8c8d;
@@ -171,33 +220,217 @@
     }
     .footer {
       text-align: center;
-      padding: 2rem;
+      padding: 2rem 1rem;
       background: #2c3e4e;
       color: #ecf0f1;
       margin-top: 2rem;
       border-radius: 3rem 3rem 0 0;
+      font-size: 0.9rem;
     }
-    #ai-btn { position: fixed; bottom: 28px; left: 28px; width: 60px; height: 60px; background: radial-gradient(circle at 30% 20%, #e67e22, #b64900); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; cursor: pointer; box-shadow: 0 10px 20px rgba(230,126,34,0.4); z-index: 1000; border: 2px solid white; transition: all 0.25s; }
-    #ai-btn:hover { transform: scale(1.08); box-shadow: 0 15px 28px rgba(230,126,34,0.6); }
-    #ai-box { position: fixed; bottom: 100px; left: 28px; width: 380px; max-width: calc(100vw - 50px); background: rgba(255, 255, 250, 0.98); backdrop-filter: blur(20px); border-radius: 32px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.3); display: none; flex-direction: column; overflow: hidden; z-index: 1001; font-family: 'Inter', sans-serif; animation: fadeScale 0.2s ease; }
-    @keyframes fadeScale { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-    #ai-box::before { content: "🐱 Kittu AI Assistant"; padding: 14px 20px; background: linear-gradient(95deg, #e67e22, #f39c12); color: white; font-weight: 700; display: block; }
-    #chat { height: 360px; overflow-y: auto; padding: 18px; display: flex; flex-direction: column; gap: 12px; background: #fffcf8; }
-    .message { display: flex; flex-direction: column; max-width: 88%; animation: slideMsg 0.2s ease; }
-    @keyframes slideMsg { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    #ai-btn {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      width: 55px;
+      height: 55px;
+      background: radial-gradient(circle at 30% 20%, #e67e22, #b64900);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(230,126,34,0.4);
+      z-index: 1000;
+      border: 2px solid white;
+      transition: all 0.25s;
+    }
+    #ai-btn:hover {
+      transform: scale(1.08);
+      box-shadow: 0 12px 25px rgba(230,126,34,0.6);
+    }
+    #ai-box {
+      position: fixed;
+      bottom: 85px;
+      left: 20px;
+      width: 340px;
+      max-width: calc(100vw - 40px);
+      background: rgba(255, 255, 250, 0.98);
+      backdrop-filter: blur(20px);
+      border-radius: 28px;
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.3);
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      z-index: 1001;
+      font-family: 'Inter', sans-serif;
+      animation: fadeScale 0.2s ease;
+    }
+    @keyframes fadeScale {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    #ai-box::before {
+      content: "🐱 Kittu AI Assistant";
+      padding: 12px 16px;
+      background: linear-gradient(95deg, #e67e22, #f39c12);
+      color: white;
+      font-weight: 700;
+      font-size: 0.9rem;
+      display: block;
+    }
+    #chat {
+      height: 340px;
+      overflow-y: auto;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: #fffcf8;
+    }
+    .message {
+      display: flex;
+      flex-direction: column;
+      max-width: 88%;
+      animation: slideMsg 0.2s ease;
+    }
+    @keyframes slideMsg {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
     .message.user { align-self: flex-end; }
     .message.ai { align-self: flex-start; }
-    .bubble { padding: 10px 16px; border-radius: 26px; font-size: 0.9rem; background: white; border: 1px solid #f0e0d2; }
-    .user .bubble { background: #e67e22; color: white; border: none; border-bottom-right-radius: 6px; }
-    .ai .bubble { background: #ffffff; border-bottom-left-radius: 6px; }
-    .timestamp { font-size: 0.65rem; color: #b0a89c; margin: 4px 12px 0; }
-    .input-wrapper { display: flex; border-top: 1px solid #f0dfcf; background: white; }
-    #ai-box input { flex: 1; border: none; padding: 15px 16px; outline: none; background: #fffaf5; }
-    #ai-box button { border: none; background: #e67e22; color: white; font-weight: 700; padding: 0 24px; cursor: pointer; }
-    #ai-box button:hover { background: #d35400; }
-    .typing span { display: inline-block; width: 7px; height: 7px; background: #e67e22; border-radius: 50%; margin: 0 2px; animation: wave 1.2s infinite; }
-    @keyframes wave { 0%,60%,100% { transform: translateY(0); opacity: 0.5; } 30% { transform: translateY(-5px); opacity: 1; } }
-    @media (max-width: 700px) { .navigation { flex-direction: column; border-radius: 2rem; padding: 1rem; } #ai-box { left: 16px; width: 300px; bottom: 88px; } #ai-btn { left: 16px; bottom: 18px; width: 52px; height: 52px; font-size: 28px; } }
+    .bubble {
+      padding: 8px 14px;
+      border-radius: 22px;
+      font-size: 0.85rem;
+      background: white;
+      border: 1px solid #f0e0d2;
+    }
+    .user .bubble {
+      background: #e67e22;
+      color: white;
+      border: none;
+      border-bottom-right-radius: 5px;
+    }
+    .ai .bubble {
+      background: #ffffff;
+      border-bottom-left-radius: 5px;
+    }
+    .timestamp {
+      font-size: 0.6rem;
+      color: #b0a89c;
+      margin: 3px 10px 0;
+    }
+    .input-wrapper {
+      display: flex;
+      border-top: 1px solid #f0dfcf;
+      background: white;
+    }
+    #ai-box input {
+      flex: 1;
+      border: none;
+      padding: 12px 14px;
+      font-size: 0.85rem;
+      outline: none;
+      background: #fffaf5;
+    }
+    #ai-box button {
+      border: none;
+      background: #e67e22;
+      color: white;
+      font-weight: 700;
+      padding: 0 18px;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+    #ai-box button:hover {
+      background: #d35400;
+    }
+    .typing span {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background: #e67e22;
+      border-radius: 50%;
+      margin: 0 2px;
+      animation: wave 1.2s infinite;
+    }
+    @keyframes wave {
+      0%,60%,100% { transform: translateY(0); opacity: 0.5; }
+      30% { transform: translateY(-4px); opacity: 1; }
+    }
+    @media (max-width: 768px) {
+      .menu-icon {
+        display: block;
+      }
+      .nav-left ul {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        background: rgba(255, 250, 245, 0.95);
+        backdrop-filter: blur(14px);
+        position: absolute;
+        top: 70px;
+        left: 0;
+        right: 0;
+        border-radius: 30px;
+        padding: 1.2rem;
+        gap: 1rem;
+        z-index: 100;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      }
+      .nav-left ul.show {
+        display: flex;
+      }
+      .nav-left {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .nav-right {
+        width: 100%;
+        margin-top: 0.8rem;
+      }
+      .nav-right form {
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .form-input {
+        width: 100%;
+      }
+      .navigation {
+        flex-wrap: wrap;
+        border-radius: 2rem;
+        padding: 1rem;
+      }
+      .blogs-container {
+        width: 95%;
+      }
+      #ai-box {
+        left: 12px;
+        bottom: 78px;
+        width: calc(100vw - 30px);
+        max-width: 320px;
+      }
+      #ai-btn {
+        left: 12px;
+        bottom: 12px;
+        width: 48px;
+        height: 48px;
+        font-size: 24px;
+      }
+    }
+    @media (min-width: 769px) and (max-width: 1024px) {
+      .max-width-1 {
+        width: 95%;
+      }
+      .form-input {
+        width: 180px;
+      }
+      .blogs-container {
+        width: 95%;
+      }
+    }
   </style>
 </head>
 <body>
@@ -205,7 +438,8 @@
 <nav class="navigation max-width-1 m-auto">
   <div class="nav-left">
     <a href="index.html"><span><img src="img/logo.png" width="50px" style="border-radius:12px" alt="logo" /></span></a>
-    <ul>
+    <button class="menu-icon" id="menuToggle"><i class="fas fa-bars"></i></button>
+    <ul id="navMenu">
       <li><a href="index.html">Home</a></li>
       <li><a href="create-blog.html">Create Your Blog</a></li>
       <li><a href="contact.html">Contact</a></li>
@@ -213,9 +447,9 @@
     </ul>
   </div>
   <div class="nav-right">
-    <form action="search.html" method="get" onsubmit="return false;">
-      <input class="form-input" type="text" placeholder="Search blogs..." id="globalSearch" />
-      <button class="btn" type="button" onclick="alert('Search: '+document.getElementById('globalSearch').value)">Search</button>
+    <form action="search.html" method="get">
+      <input class="form-input" type="text" name="query" placeholder="Article Search" id="searchInput" value="" />
+      <button class="btn" type="submit">Search</button>
     </form>
   </div>
 </nav>
@@ -232,9 +466,26 @@
 </div>
 
 <div id="ai-btn">🤖</div>
-<div id="ai-box"><div id="chat"></div><div class="input-wrapper"><input id="msg" placeholder="Ask Kittu AI..." /><button onclick="askAI()">Send</button></div></div>
+<div id="ai-box">
+  <div id="chat"></div>
+  <div class="input-wrapper">
+    <input id="msg" placeholder="Ask Kittu AI..." />
+    <button onclick="askAI()">Send</button>
+  </div>
+</div>
 
 <script>
+  const menuToggle = document.getElementById('menuToggle');
+  const navMenu = document.getElementById('navMenu');
+  menuToggle.addEventListener('click', () => {
+    navMenu.classList.toggle('show');
+  });
+  document.querySelectorAll('#navMenu a').forEach(link => {
+    link.addEventListener('click', () => {
+      navMenu.classList.remove('show');
+    });
+  });
+
   function escapeHtml(str) {
     return str.replace(/[&<>]/g, function(m) {
       if (m === '&') return '&amp;';
@@ -280,7 +531,6 @@
   }
   loadBlogs();
 
-  // AI Assistant same as previous pages
   const AI_BTN = document.getElementById("ai-btn");
   const AI_BOX = document.getElementById("ai-box");
   const CHAT_DIV = document.getElementById("chat");
@@ -292,6 +542,7 @@
       addMsgToChat("👋 I'm Kittu AI. Want to discover great blogs?", "ai");
     }
   };
+
   function addMsgToChat(text, sender) {
     const msgDiv = document.createElement("div");
     msgDiv.className = `message ${sender}`;
@@ -306,6 +557,7 @@
     CHAT_DIV.appendChild(msgDiv);
     CHAT_DIV.scrollTop = CHAT_DIV.scrollHeight;
   }
+
   let thinkingEl = null;
   function showThinking() {
     if (thinkingEl) thinkingEl.remove();
@@ -317,6 +569,7 @@
     CHAT_DIV.scrollTop = CHAT_DIV.scrollHeight;
   }
   function hideThinking() { if (thinkingEl) thinkingEl.remove(); thinkingEl = null; }
+
   async function askAI() {
     const msg = MSG_INPUT.value.trim();
     if (!msg) return;
@@ -339,12 +592,13 @@
       addMsgToChat(data.reply || "No response.", "ai");
     } catch(err) {
       hideThinking();
-      addMsgToChat("❌ Backend error. Start python ai_backend.py", "ai");
+      addMsgToChat("Backend error. Start python ai_backend.py", "ai");
     } finally {
       MSG_INPUT.disabled = false;
       MSG_INPUT.focus();
     }
   }
+
   MSG_INPUT.addEventListener("keypress", (e) => { if (e.key === "Enter") askAI(); });
   window.addEventListener("click", (e) => {
     if (!AI_BOX.contains(e.target) && e.target !== AI_BTN && AI_BOX.style.display === "flex") {

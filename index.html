@@ -107,6 +107,14 @@
     .nav-left ul li a:hover {
       color: #e67e22;
     }
+    .menu-icon {
+      display: none;
+      font-size: 1.6rem;
+      cursor: pointer;
+      color: #e67e22;
+      background: none;
+      border: none;
+    }
     .nav-right form {
       display: flex;
       gap: 0.6rem;
@@ -139,14 +147,6 @@
       transform: scale(0.96);
       background: linear-gradient(95deg, #d35400, #e67e22);
       box-shadow: 0 4px 12px rgba(230,126,34,0.4);
-    }
-    .menu-icon {
-      display: none;
-      font-size: 1.6rem;
-      cursor: pointer;
-      color: #e67e22;
-      background: none;
-      border: none;
     }
     hr {
       opacity: 0.3;
@@ -481,9 +481,9 @@
     </ul>
   </div>
   <div class="nav-right">
-    <form action="search.html" method="get" onsubmit="return false;">
-      <input class="form-input" type="text" name="query" placeholder="Article Search" id="globalSearch" />
-      <button class="btn" type="button" onclick="alert('Search: ' + document.getElementById('globalSearch').value)">Search</button>
+    <form action="search.html" method="get">
+      <input class="form-input" type="text" name="query" placeholder="Article Search" />
+      <button class="btn" type="submit">Search</button>
     </form>
   </div>
 </nav>
