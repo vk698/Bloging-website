@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover" />
   <title>iBlog – Heaven for Bloggers</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
@@ -15,15 +15,13 @@
       padding: 0;
       box-sizing: border-box;
     }
-
     body {
       font-family: 'Inter', sans-serif;
       background: linear-gradient(145deg, #fff8f0 0%, #ffe6d5 100%);
       color: #2c3e4e;
-      line-height: 1.5;
       scroll-behavior: smooth;
+      overflow-x: hidden;
     }
-
     body::before {
       content: '';
       position: fixed;
@@ -36,14 +34,15 @@
       z-index: -2;
       animation: drift 18s infinite alternate;
     }
-
     @keyframes drift {
       0% { transform: scale(1) translate(0, 0); opacity: 0.5; }
       100% { transform: scale(1.2) translate(2%, 1%); opacity: 0.9; }
     }
-
     .max-width-1 {
       max-width: 1280px;
+      width: 90%;
+      margin-left: auto;
+      margin-right: auto;
     }
     .m-auto {
       margin-left: auto;
@@ -53,19 +52,19 @@
       margin-top: 2rem;
       margin-bottom: 2rem;
     }
-
     .navigation {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0.8rem 2rem;
+      padding: 0.8rem 1.5rem;
       background: rgba(255, 250, 245, 0.85);
       backdrop-filter: blur(14px);
       border-radius: 80px;
       margin-top: 1.2rem;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05), 0 1px 0 0 rgba(255,255,200,0.6);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
       transition: all 0.3s ease;
       border: 1px solid rgba(255,245,230,0.8);
+      position: relative;
     }
     .navigation:hover {
       transform: translateY(-3px);
@@ -74,12 +73,14 @@
     .nav-left {
       display: flex;
       align-items: center;
-      gap: 2rem;
+      gap: 1.5rem;
     }
     .nav-left ul {
       display: flex;
-      gap: 1.8rem;
+      gap: 1.2rem;
       list-style: none;
+      margin: 0;
+      padding: 0;
     }
     .nav-left ul li a {
       text-decoration: none;
@@ -87,6 +88,7 @@
       font-weight: 600;
       transition: 0.2s;
       position: relative;
+      font-size: 0.95rem;
     }
     .nav-left ul li a::after {
       content: '';
@@ -99,7 +101,7 @@
       transition: width 0.25s ease;
       border-radius: 3px;
     }
-    .nav-left ul li a:hover::after, .nav-left ul li a.active::after {
+    .nav-left ul li a:hover::after {
       width: 100%;
     }
     .nav-left ul li a:hover {
@@ -114,7 +116,7 @@
       border-radius: 50px;
       border: 1px solid #ffe0cc;
       background: white;
-      width: 240px;
+      width: 200px;
       outline: none;
       font-size: 0.9rem;
       transition: 0.2s;
@@ -132,39 +134,43 @@
       font-weight: 600;
       cursor: pointer;
       transition: 0.2s;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
     .btn:hover {
       transform: scale(0.96);
       background: linear-gradient(95deg, #d35400, #e67e22);
       box-shadow: 0 4px 12px rgba(230,126,34,0.4);
     }
-
+    .menu-icon {
+      display: none;
+      font-size: 1.6rem;
+      cursor: pointer;
+      color: #e67e22;
+      background: none;
+      border: none;
+    }
+    hr {
+      opacity: 0.3;
+      margin: 1rem 0;
+    }
     .content {
       display: flex;
       align-items: center;
-      gap: 2.5rem;
+      gap: 2rem;
       background: rgba(255, 250, 245, 0.7);
       backdrop-filter: blur(4px);
-      border-radius: 3rem;
-      padding: 2.5rem;
+      border-radius: 2rem;
+      padding: 2rem;
       margin-top: 2rem;
       transition: all 0.4s;
       animation: fadeUp 0.6s ease-out;
       border: 1px solid rgba(255,235,215,0.9);
     }
     @keyframes fadeUp {
-      from {
-        opacity: 0;
-        transform: translateY(24px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     .content-left h1 {
-      font-size: 3.2rem;
+      font-size: clamp(1.8rem, 5vw, 3.2rem);
       background: linear-gradient(125deg, #e67e22, #d35400, #f39c12);
       background-clip: text;
       -webkit-background-clip: text;
@@ -173,12 +179,13 @@
       letter-spacing: -0.02em;
     }
     .content-left p {
-      font-size: 1.2rem;
+      font-size: clamp(0.9rem, 3vw, 1.2rem);
       color: #4a5b6e;
       line-height: 1.6;
     }
     .content-right img {
-      max-width: 300px;
+      max-width: 100%;
+      width: 260px;
       border-radius: 32px;
       box-shadow: 0 20px 30px -8px rgba(0,0,0,0.15);
       transition: transform 0.4s ease;
@@ -186,12 +193,11 @@
     .content-right img:hover {
       transform: scale(1.02) rotate(1deg);
     }
-
     .home-articles {
       background: rgba(255, 255, 255, 0.85);
       backdrop-filter: blur(4px);
       border-radius: 2rem;
-      padding: 2rem;
+      padding: 1.5rem;
       margin-top: 2rem;
       margin-bottom: 2rem;
       transition: all 0.3s;
@@ -199,7 +205,7 @@
       border: 1px solid rgba(230,126,34,0.15);
     }
     .home-articles h2 {
-      font-size: 2rem;
+      font-size: clamp(1.4rem, 4vw, 2rem);
       margin-bottom: 1.5rem;
       border-left: 6px solid #e67e22;
       padding-left: 1rem;
@@ -207,20 +213,21 @@
     }
     .home-article {
       display: flex;
-      gap: 2rem;
+      gap: 1.5rem;
       align-items: center;
-      padding: 1.2rem 0;
+      padding: 1rem 0;
       border-bottom: 1px solid rgba(230,126,34,0.2);
       transition: 0.2s;
+      flex-wrap: wrap;
     }
     .home-article:hover {
-      transform: translateX(8px);
+      transform: translateX(5px);
     }
     .home--article-img img {
-      width: 220px;
-      height: 150px;
-      object-fit: cover;
-      border-radius: 24px;
+      width: 100%;
+      max-width: 200px;
+      height: auto;
+      border-radius: 20px;
       transition: 0.3s;
       box-shadow: 0 6px 12px rgba(0,0,0,0.05);
     }
@@ -233,7 +240,7 @@
     }
     .home-article-content h3 {
       color: #1e1e2a;
-      font-size: 1.6rem;
+      font-size: clamp(1.1rem, 4vw, 1.6rem);
       margin-bottom: 0.4rem;
       transition: color 0.2s;
     }
@@ -242,48 +249,45 @@
     }
     .footer {
       text-align: center;
-      padding: 2rem;
+      padding: 2rem 1rem;
       background: #2c3e4e;
       color: #ecf0f1;
       margin-top: 2rem;
       border-radius: 3rem 3rem 0 0;
       font-size: 0.9rem;
     }
-
-    /* AI Button Glow + Left Side Card */
     #ai-btn {
       position: fixed;
-      bottom: 28px;
-      left: 28px;
-      width: 60px;
-      height: 60px;
+      bottom: 20px;
+      left: 20px;
+      width: 55px;
+      height: 55px;
       background: radial-gradient(circle at 30% 20%, #e67e22, #b64900);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 32px;
+      font-size: 28px;
       cursor: pointer;
-      box-shadow: 0 10px 20px rgba(230,126,34,0.4);
+      box-shadow: 0 8px 18px rgba(230,126,34,0.4);
       z-index: 1000;
       border: 2px solid white;
       transition: all 0.25s;
     }
     #ai-btn:hover {
       transform: scale(1.08);
-      box-shadow: 0 15px 28px rgba(230,126,34,0.6);
-      background: radial-gradient(circle at 30% 20%, #f39c12, #e67e22);
+      box-shadow: 0 12px 25px rgba(230,126,34,0.6);
     }
     #ai-box {
       position: fixed;
-      bottom: 100px;
-      left: 28px;
-      width: 380px;
-      max-width: calc(100vw - 50px);
+      bottom: 85px;
+      left: 20px;
+      width: 340px;
+      max-width: calc(100vw - 40px);
       background: rgba(255, 255, 250, 0.98);
       backdrop-filter: blur(20px);
-      border-radius: 32px;
-      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.3), 0 0 0 1px rgba(230,126,34,0.2);
+      border-radius: 28px;
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.3);
       display: none;
       flex-direction: column;
       overflow: hidden;
@@ -297,20 +301,20 @@
     }
     #ai-box::before {
       content: "🐱 Kittu AI Assistant";
-      padding: 14px 20px;
+      padding: 12px 16px;
       background: linear-gradient(95deg, #e67e22, #f39c12);
       color: white;
       font-weight: 700;
-      font-size: 1rem;
+      font-size: 0.9rem;
       display: block;
     }
     #chat {
-      height: 360px;
+      height: 340px;
       overflow-y: auto;
-      padding: 18px;
+      padding: 14px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
       background: #fffcf8;
     }
     .message {
@@ -320,38 +324,32 @@
       animation: slideMsg 0.2s ease;
     }
     @keyframes slideMsg {
-      from { opacity: 0; transform: translateY(10px); }
+      from { opacity: 0; transform: translateY(8px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    .message.user {
-      align-self: flex-end;
-    }
-    .message.ai {
-      align-self: flex-start;
-    }
+    .message.user { align-self: flex-end; }
+    .message.ai { align-self: flex-start; }
     .bubble {
-      padding: 10px 16px;
-      border-radius: 26px;
-      font-size: 0.9rem;
+      padding: 8px 14px;
+      border-radius: 22px;
+      font-size: 0.85rem;
       background: white;
       border: 1px solid #f0e0d2;
-      color: #2c3e4e;
     }
     .user .bubble {
       background: #e67e22;
       color: white;
       border: none;
-      border-bottom-right-radius: 6px;
+      border-bottom-right-radius: 5px;
     }
     .ai .bubble {
       background: #ffffff;
-      border-bottom-left-radius: 6px;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+      border-bottom-left-radius: 5px;
     }
     .timestamp {
-      font-size: 0.65rem;
+      font-size: 0.6rem;
       color: #b0a89c;
-      margin: 4px 12px 0;
+      margin: 3px 10px 0;
     }
     .input-wrapper {
       display: flex;
@@ -361,8 +359,8 @@
     #ai-box input {
       flex: 1;
       border: none;
-      padding: 15px 16px;
-      font-size: 0.9rem;
+      padding: 12px 14px;
+      font-size: 0.85rem;
       outline: none;
       background: #fffaf5;
     }
@@ -371,17 +369,17 @@
       background: #e67e22;
       color: white;
       font-weight: 700;
-      padding: 0 24px;
+      padding: 0 18px;
       cursor: pointer;
-      transition: 0.2s;
+      font-size: 0.85rem;
     }
     #ai-box button:hover {
       background: #d35400;
     }
     .typing span {
       display: inline-block;
-      width: 7px;
-      height: 7px;
+      width: 6px;
+      height: 6px;
       background: #e67e22;
       border-radius: 50%;
       margin: 0 2px;
@@ -389,15 +387,83 @@
     }
     @keyframes wave {
       0%,60%,100% { transform: translateY(0); opacity: 0.5; }
-      30% { transform: translateY(-5px); opacity: 1; }
+      30% { transform: translateY(-4px); opacity: 1; }
     }
-    @media (max-width: 700px) {
-      .navigation { flex-direction: column; border-radius: 2rem; padding: 1rem; }
-      .content { flex-direction: column; text-align: center; }
-      .home-article { flex-direction: column; text-align: center; }
-      #ai-box { left: 16px; width: 300px; bottom: 88px; }
-      #ai-btn { left: 16px; bottom: 18px; width: 52px; height: 52px; font-size: 28px; }
-      .content-left h1 { font-size: 2.2rem; }
+    @media (max-width: 768px) {
+      .menu-icon {
+        display: block;
+      }
+      .nav-left ul {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        background: rgba(255, 250, 245, 0.95);
+        backdrop-filter: blur(14px);
+        position: absolute;
+        top: 70px;
+        left: 0;
+        right: 0;
+        border-radius: 30px;
+        padding: 1.2rem;
+        gap: 1rem;
+        z-index: 100;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      }
+      .nav-left ul.show {
+        display: flex;
+      }
+      .nav-left {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .nav-right {
+        width: 100%;
+        margin-top: 0.8rem;
+      }
+      .nav-right form {
+        justify-content: center;
+      }
+      .form-input {
+        width: 100%;
+      }
+      .navigation {
+        flex-wrap: wrap;
+        border-radius: 2rem;
+        padding: 1rem;
+      }
+      .content {
+        flex-direction: column;
+        text-align: center;
+        padding: 1.5rem;
+      }
+      .home-article {
+        flex-direction: column;
+        text-align: center;
+      }
+      .home--article-img img {
+        max-width: 100%;
+      }
+      #ai-box {
+        left: 12px;
+        bottom: 78px;
+        width: calc(100vw - 30px);
+        max-width: 320px;
+      }
+      #ai-btn {
+        left: 12px;
+        bottom: 12px;
+        width: 48px;
+        height: 48px;
+        font-size: 24px;
+      }
+    }
+    @media (min-width: 769px) and (max-width: 1024px) {
+      .max-width-1 {
+        width: 95%;
+      }
+      .content-right img {
+        width: 220px;
+      }
     }
   </style>
 </head>
@@ -405,25 +471,24 @@
 
 <nav class="navigation max-width-1 m-auto">
   <div class="nav-left">
-    <a href="index.html">
-      <span><img src="img/logo.png" width="50px" style="border-radius: 12px;" alt="logo" /></span>
-    </a>
-    <ul>
-      <li><a href="./">Home</a></li>
-      <li><a href="create-blog.html">Create Your Blog</a></li>
+    <a href="index.html"><span><img src="img/logo.png" width="50px" style="border-radius: 12px;" alt="logo" /></span></a>
+    <button class="menu-icon" id="menuToggle"><i class="fas fa-bars"></i></button>
+    <ul id="navMenu">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="create-blog.html">Create Blog</a></li>
       <li><a href="contact.html">Contact</a></li>
       <li><a href="blogs.html">All Blogs</a></li>
     </ul>
   </div>
-    <div class="nav-right">
-    <form action="search.html" method="get">
-      <input class="form-input" type="text" name="query" placeholder="Article Search" />
-      <button class="btn">Search</button>
+  <div class="nav-right">
+    <form action="search.html" method="get" onsubmit="return false;">
+      <input class="form-input" type="text" name="query" placeholder="Article Search" id="globalSearch" />
+      <button class="btn" type="button" onclick="alert('Search: ' + document.getElementById('globalSearch').value)">Search</button>
     </form>
   </div>
 </nav>
 
-<div class="max-width-1 m-auto"><hr style="opacity:0.3" /></div>
+<div class="max-width-1 m-auto"><hr /></div>
 
 <div class="m-auto content max-width-1 my-2">
   <div class="content-left">
@@ -435,13 +500,13 @@
   </div>
 </div>
 
-<div class="max-width-1 m-auto"><hr style="opacity:0.3" /></div>
+<div class="max-width-1 m-auto"><hr /></div>
 
 <div class="home-articles max-width-1 m-auto">
   <h2><i class="fas fa-star" style="color:#e67e22; margin-right: 8px;"></i> Featured article</h2>
   <div class="home-article">
     <div class="home--article-img">
-      <a href="blogpost.html"><img src="img/img2.avif" alt="featured blog" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 400 240\'%3E%3Crect width=\'400\' height=\'240\' fill=\'%23e67e22\' opacity=\'0.2\'/%3E%3Ctext x=\'200\' y=\'130\' font-size=\'22\' text-anchor=\'middle\' fill=\'%23d35400\'%3EBlog%20image%3C/text%3E%3C/svg%3E'" /></a>
+      <a href="blogpost.html"><img src="img/img2.avif" alt="featured blog" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 400 240\'%3E%3Crect width=\'400\' height=\'240\' fill=\'%23e67e22\' opacity=\'0.2\'/%3E%3Ctext x=\'200\' y=\'130\' font-size=\'22\' text-anchor=\'middle\' fill=\'%23d35400\'%3EBlog image%3C/text%3E%3C/svg%3E'" /></a>
     </div>
     <div class="home-article-content">
       <a href="blogpost.html"><h3>Why Everyone Should Start Blogging</h3></a>
@@ -459,12 +524,23 @@
 <div id="ai-box">
   <div id="chat"></div>
   <div class="input-wrapper">
-    <input id="msg" placeholder="Ask Kittu AI about blogging..." />
+    <input id="msg" placeholder="Ask Kittu AI..." />
     <button onclick="askAI()">Send</button>
   </div>
 </div>
 
 <script>
+  const menuToggle = document.getElementById('menuToggle');
+  const navMenu = document.getElementById('navMenu');
+  menuToggle.addEventListener('click', () => {
+    navMenu.classList.toggle('show');
+  });
+  document.querySelectorAll('#navMenu a').forEach(link => {
+    link.addEventListener('click', () => {
+      navMenu.classList.remove('show');
+    });
+  });
+
   const AI_BTN = document.getElementById("ai-btn");
   const AI_BOX = document.getElementById("ai-box");
   const CHAT_DIV = document.getElementById("chat");
@@ -473,7 +549,7 @@
   AI_BTN.onclick = () => {
     AI_BOX.style.display = AI_BOX.style.display === "flex" ? "none" : "flex";
     if (AI_BOX.style.display === "flex" && CHAT_DIV.children.length === 0) {
-      addMsgToChat("👋 Hello! I'm Kittu AI. Ask me writing tips, blog ideas, or anything.", "ai");
+      addMsgToChat("👋 Hello! I'm Kittu AI. Ask me about blogging, writing, or anything!", "ai");
     }
   };
 
@@ -507,40 +583,40 @@
     thinkingEl = null;
   }
 
-async function askAI() {
-  const msg = MSG_INPUT.value.trim();
-  if (!msg) return;
-
-  addMsgToChat(msg, "user");
-  MSG_INPUT.value = "";
-  MSG_INPUT.disabled = true;
-
-  showThinking();
-
-  try {
-    const res = await fetch("http://localhost:5000/api/ask-ai", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: msg })
-    });
-
-    const data = await res.json();
-
-    hideThinking();
-    addMsgToChat(data.reply || "No response from AI.", "ai");
-
-  } catch (err) {
-    hideThinking();
-    addMsgToChat("❌ Backend not responding. Check Flask/Ollama.", "ai");
-  } finally {
-    MSG_INPUT.disabled = false;
-    MSG_INPUT.focus();
+  async function askAI() {
+    const msg = MSG_INPUT.value.trim();
+    if (!msg) return;
+    addMsgToChat(msg, "user");
+    MSG_INPUT.value = "";
+    MSG_INPUT.disabled = true;
+    showThinking();
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 45000);
+      const res = await fetch("http://localhost:5000/api/ask-ai", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: msg }),
+        signal: controller.signal
+      });
+      clearTimeout(timeout);
+      const data = await res.json();
+      hideThinking();
+      addMsgToChat(data.reply || "No response from AI.", "ai");
+    } catch (err) {
+      hideThinking();
+      let errMsg = "❌ Backend error. Start python ai_backend.py";
+      if (err.name === "AbortError") errMsg = "⏰ Request timeout. Check Ollama.";
+      addMsgToChat(errMsg, "ai");
+    } finally {
+      MSG_INPUT.disabled = false;
+      MSG_INPUT.focus();
+    }
   }
-}
+
   MSG_INPUT.addEventListener("keypress", (e) => {
     if (e.key === "Enter") askAI();
   });
-
   window.addEventListener("click", (e) => {
     if (!AI_BOX.contains(e.target) && e.target !== AI_BTN && AI_BOX.style.display === "flex") {
       AI_BOX.style.display = "none";
