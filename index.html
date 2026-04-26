@@ -507,37 +507,36 @@
     thinkingEl = null;
   }
 
-  async function askAI() {
-    const msg = MSG_INPUT.value.trim();
-    if (!msg) return;
-    addMsgToChat(msg, "user");
-    MSG_INPUT.value = "";
-    MSG_INPUT.disabled = true;
-    showThinking();
-    try {
-      const controller = new AbortController();
-      const to = setTimeout(() => controller.abort(), 45000);
-      const res = await fetch("http://localhost:5000/api/ask-ai", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: msg }),
-        signal: controller.signal
-      });
-      clearTimeout(to);
-      const data = await res.json();
-      hideThinking();
-      addMsgToChat(data.reply || "No response from AI.", "ai");
-    } catch (err) {
-      hideThinking();
-      let errMsg = "❌ Cannot reach backend. Start server: python ai_backend.py";
-      if (err.name === "AbortError") errMsg = "⏰ Request timeout. Check Ollama.";
-      addMsgToChat(errMsg, "ai");
-    } finally {
-      MSG_INPUT.disabled = false;
-      MSG_INPUT.focus();
-    }
-  }
+async function askAI() {
+  const msg = MSG_INPUT.value.trim();
+  if (!msg) return;
 
+  addMsgToChat(msg, "user");
+  MSG_INPUT.value = "";
+  MSG_INPUT.disabled = true;
+
+  showThinking();
+
+  try {
+    const res = await fetch("http://localhost:5000/api/ask-ai", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: msg })
+    });
+
+    const data = await res.json();
+
+    hideThinking();
+    addMsgToChat(data.reply || "No response from AI.", "ai");
+
+  } catch (err) {
+    hideThinking();
+    addMsgToChat("❌ Backend not responding. Check Flask/Ollama.", "ai");
+  } finally {
+    MSG_INPUT.disabled = false;
+    MSG_INPUT.focus();
+  }
+}
   MSG_INPUT.addEventListener("keypress", (e) => {
     if (e.key === "Enter") askAI();
   });
