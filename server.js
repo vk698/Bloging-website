@@ -10,12 +10,22 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
+// Health check route (for Render)
+app.get("/api/health", (req, res) => {
+  res.json({ status: "ok", time: new Date().toISOString() });
+});
+
+// Root route (for testing)
+app.get("/", (req, res) => {
+  res.send("✅ iBlog backend is running. Use /api/ask-ai for AI chat, /api/health for health check.");
+});
+
 // Groq AI client
 const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY,
 });
 
-// AI chat endpoint (same as your frontend expects)
+// AI chat endpoint
 app.post("/api/ask-ai", async (req, res) => {
   const { message } = req.body;
   if (!message) {
@@ -26,15 +36,14 @@ app.post("/api/ask-ai", async (req, res) => {
       messages: [
         {
           role: "system",
-          content:
-            "You are Kittu, a helpful AI assistant for iBlog. Reply in the same language as the user. Be friendly and concise.",
+          content: "You are Kittu, a helpful AI assistant for iBlog. Reply in the same language as the user. Be friendly and concise.",
         },
         {
           role: "user",
           content: message,
         },
       ],
-      model: "mixtral-8x7b-32768", // free, fast model
+      model: "mixtral-8x7b-32768",
       temperature: 0.7,
     });
     const reply = chatCompletion.choices[0]?.message?.content || "Sorry, I could not generate a reply.";
@@ -45,10 +54,9 @@ app.post("/api/ask-ai", async (req, res) => {
   }
 });
 
-// Contact form endpoint (existing)
+// Contact form endpoint
 app.post("/send-message", async (req, res) => {
   const { name, email, phone, message } = req.body;
-
   let transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -56,19 +64,12 @@ app.post("/send-message", async (req, res) => {
       pass: process.env.PASSWORD,
     },
   });
-
   let mailOptions = {
     from: email,
     to: process.env.EMAIL,
     subject: "New Contact Form Message",
-    text: `
-Name: ${name}
-Email: ${email}
-Phone: ${phone}
-Message: ${message}
-    `,
+    text: `Name: ${name}\nEmail: ${email}\nPhone: ${phone}\nMessage: ${message}`,
   };
-
   try {
     await transporter.sendMail(mailOptions);
     res.json({ success: true });
@@ -78,12 +79,7 @@ Message: ${message}
   }
 });
 
-// Health check endpoint (optional)
-app.get("/api/health", (req, res) => {
-  res.json({ status: "ok" });
-});
-
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`✅ Server running on port ${PORT}`);
 });
