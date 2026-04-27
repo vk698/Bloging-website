@@ -43,7 +43,7 @@ app.post("/api/ask-ai", async (req, res) => {
           content: message,
         },
       ],
-      model: "mixtral-8x7b-32768",
+      model: "llama-3.1-8b-instant",   // ✅ CHANGED THIS LINE
       temperature: 0.7,
     });
     const reply = chatCompletion.choices[0]?.message?.content || "Sorry, I could not generate a reply.";
