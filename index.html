@@ -593,8 +593,8 @@
     try {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 45000);
-      // 🔁 CHANGE THIS URL to your deployed backend (Render) after deployment
-      const API_URL = "https://your-backend.onrender.com/api/ask-ai";
+      
+      const API_URL = "https://iblog-backend-6i6b.onrender.com/api/ask-ai";
       const res = await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
