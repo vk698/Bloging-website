@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const nodemailer = require("nodemailer");
+const Groq = require("groq-sdk");
 require("dotenv").config();
 
 const app = express();
@@ -9,6 +10,42 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
+// Groq AI client
+const groq = new Groq({
+  apiKey: process.env.GROQ_API_KEY,
+});
+
+// AI chat endpoint (same as your frontend expects)
+app.post("/api/ask-ai", async (req, res) => {
+  const { message } = req.body;
+  if (!message) {
+    return res.status(400).json({ reply: "Please send a message." });
+  }
+  try {
+    const chatCompletion = await groq.chat.completions.create({
+      messages: [
+        {
+          role: "system",
+          content:
+            "You are Kittu, a helpful AI assistant for iBlog. Reply in the same language as the user. Be friendly and concise.",
+        },
+        {
+          role: "user",
+          content: message,
+        },
+      ],
+      model: "mixtral-8x7b-32768", // free, fast model
+      temperature: 0.7,
+    });
+    const reply = chatCompletion.choices[0]?.message?.content || "Sorry, I could not generate a reply.";
+    res.json({ reply });
+  } catch (error) {
+    console.error("Groq API error:", error);
+    res.status(500).json({ reply: "AI service error. Please try again later." });
+  }
+});
+
+// Contact form endpoint (existing)
 app.post("/send-message", async (req, res) => {
   const { name, email, phone, message } = req.body;
 
@@ -16,8 +53,8 @@ app.post("/send-message", async (req, res) => {
     service: "gmail",
     auth: {
       user: process.env.EMAIL,
-      pass: process.env.PASSWORD
-    }
+      pass: process.env.PASSWORD,
+    },
   });
 
   let mailOptions = {
@@ -29,17 +66,24 @@ Name: ${name}
 Email: ${email}
 Phone: ${phone}
 Message: ${message}
-    `
+    `,
   };
 
   try {
     await transporter.sendMail(mailOptions);
     res.json({ success: true });
   } catch (error) {
+    console.error(error);
     res.json({ success: false, error });
   }
 });
 
-app.listen(5000, () => {
-  console.log("Server running on port 5000");
+// Health check endpoint (optional)
+app.get("/api/health", (req, res) => {
+  res.json({ status: "ok" });
+});
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });

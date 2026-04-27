@@ -593,7 +593,9 @@
     try {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 45000);
-      const res = await fetch("http://localhost:5000/api/ask-ai", {
+      // 🔁 CHANGE THIS URL to your deployed backend (Render) after deployment
+      const API_URL = "https://your-backend.onrender.com/api/ask-ai";
+      const res = await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: msg }),
@@ -605,8 +607,8 @@
       addMsgToChat(data.reply || "No response from AI.", "ai");
     } catch (err) {
       hideThinking();
-      let errMsg = "❌ Backend error. Start python ai_backend.py";
-      if (err.name === "AbortError") errMsg = "⏰ Request timeout. Check Ollama.";
+      let errMsg = "❌ Backend error. Make sure backend is deployed.";
+      if (err.name === "AbortError") errMsg = "⏰ Request timeout.";
       addMsgToChat(errMsg, "ai");
     } finally {
       MSG_INPUT.disabled = false;
