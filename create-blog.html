@@ -492,7 +492,7 @@
     });
   });
 
-  document.getElementById('blogForm').addEventListener('submit', function(e) {
+  document.getElementById('blogForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     const title = document.getElementById('blogTitle').value.trim();
     const author = document.getElementById('blogAuthor').value.trim();
@@ -502,22 +502,31 @@
       alert("Please fill all required fields.");
       return;
     }
-    const blogs = JSON.parse(localStorage.getItem('userBlogs') || '[]');
-    const newBlog = {
-      id: Date.now(),
+   try {
+  const res = await fetch("https://iblog-backend-6i6b.onrender.com/api/blog", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
       title: title,
       author: author,
-      tags: tags || "General",
-      content: content,
-      date: new Date().toLocaleDateString(),
-      readTime: Math.ceil(content.length / 1000) + " min read"
-    };
-    blogs.unshift(newBlog);
-    localStorage.setItem('userBlogs', JSON.stringify(blogs));
-    const successDiv = document.getElementById('successMsg');
-    successDiv.style.display = 'block';
-    document.getElementById('blogForm').reset();
-    setTimeout(() => successDiv.style.display = 'none', 3000);
+      tags: tags,
+      content: content
+    })
+  });
+
+  const data = await res.json();
+
+  const successDiv = document.getElementById('successMsg');
+  successDiv.style.display = 'block';
+  document.getElementById('blogForm').reset();
+  setTimeout(() => successDiv.style.display = 'none', 3000);
+
+} catch (error) {
+  alert("Error saving blog ❌");
+}
+
   });
 
   const AI_BTN = document.getElementById("ai-btn");
@@ -569,7 +578,7 @@
     try {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 45000);
-      const res = await fetch("http://localhost:5000/api/ask-ai", {
+      const res = await fetch("https://iblog-backend-6i6b.onrender.com/api/ask-ai", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: msg }),

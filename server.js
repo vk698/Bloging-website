@@ -4,6 +4,27 @@ const bodyParser = require("body-parser");
 const nodemailer = require("nodemailer");
 const Groq = require("groq-sdk");
 require("dotenv").config();
+const mongoose = require("mongoose");
+
+mongoose.connect("mongodb+srv://vishalkumar2257r_db_user:oPKxmiOQQF09554e@cluster0.pmyxiym.mongodb.net/myDatabase")
+.then(() => console.log("MongoDB Connected "))
+.catch((err) => console.log("Error:", err));
+
+const Blog = require("./models/Blog");
+
+// Create Blog API
+app.post("/api/blog", async (req, res) => {
+  try {
+    const { title, content } = req.body;
+
+    const newBlog = new Blog({ title, content });
+    await newBlog.save();
+
+    res.json({ message: "Blog saved successfully " });
+  } catch (error) {
+    res.status(500).json({ error: "Error saving blog" });
+  }
+});
 
 const app = express();
 
