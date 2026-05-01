@@ -10,7 +10,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
 
-const User = require("./User");
+const User = require("./user");
 
 mongoose.connect(process.env.MONGO_URI || "mongodb+srv://vishalkumar2257r_db_user:oPKxmiOQQF09554e@cluster0.pmyxiym.mongodb.net/myDatabase")
 .then(() => console.log("MongoDB Connected "))
