@@ -7,52 +7,49 @@ const Groq = require("groq-sdk");
 require("dotenv").config();
 const mongoose = require("mongoose");
 
-mongoose.connect("mongodb+srv://vishalkumar2257r_db_user:oPKxmiOQQF09554e@cluster0.pmyxiym.mongodb.net/myDatabase")
+mongoose.connect(process.env.MONGO_URI || "mongodb+srv://vishalkumar2257r_db_user:oPKxmiOQQF09554e@cluster0.pmyxiym.mongodb.net/myDatabase")
 .then(() => console.log("MongoDB Connected "))
 .catch((err) => console.log("Error:", err));
 
 const Blog = require("./blog");
 
-// Create Blog API
-
-
-
-
 app.use(cors());
 app.use(bodyParser.json());
+
 app.post("/api/blog", async (req, res) => {
   try {
     const { title, content, author, tags } = req.body;
-
     const newBlog = new Blog({ title, content, author, tags });
     await newBlog.save();
-
     res.json({ message: "Blog saved successfully " });
   } catch (error) {
     res.status(500).json({ error: "Error saving blog" });
   }
 });
 
-// Health check route (for Render)
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok", time: new Date().toISOString() });
 });
 
-// Root route (for testing)
 app.get("/", (req, res) => {
   res.send("✅ iBlog backend is running. Use /api/ask-ai for AI chat, /api/health for health check.");
 });
 
-// Groq AI client
-const groq = new Groq({
-  apiKey: process.env.GROQ_API_KEY,
-});
+let groq = null;
+if (process.env.GROQ_API_KEY) {
+  groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+  console.log("✅ Groq AI initialized");
+} else {
+  console.warn("⚠️ GROQ_API_KEY not set. AI features disabled.");
+}
 
-// AI chat endpoint
 app.post("/api/ask-ai", async (req, res) => {
   const { message } = req.body;
   if (!message) {
     return res.status(400).json({ reply: "Please send a message." });
+  }
+  if (!groq) {
+    return res.status(503).json({ reply: "AI service not configured. Please set GROQ_API_KEY." });
   }
   try {
     const chatCompletion = await groq.chat.completions.create({
@@ -66,7 +63,7 @@ app.post("/api/ask-ai", async (req, res) => {
           content: message,
         },
       ],
-      model: "llama-3.1-8b-instant",   // ✅ CHANGED THIS LINE
+      model: "llama-3.1-8b-instant",
       temperature: 0.7,
     });
     const reply = chatCompletion.choices[0]?.message?.content || "Sorry, I could not generate a reply.";
@@ -77,7 +74,6 @@ app.post("/api/ask-ai", async (req, res) => {
   }
 });
 
-// Contact form endpoint
 app.post("/send-message", async (req, res) => {
   const { name, email, phone, message } = req.body;
   let transporter = nodemailer.createTransport({

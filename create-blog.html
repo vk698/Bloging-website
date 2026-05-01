@@ -480,12 +480,13 @@
   </div>
 </div>
 
-<script>
+<<script>
   const menuToggle = document.getElementById('menuToggle');
   const navMenu = document.getElementById('navMenu');
   menuToggle.addEventListener('click', () => {
     navMenu.classList.toggle('show');
   });
+
   document.querySelectorAll('#navMenu a').forEach(link => {
     link.addEventListener('click', () => {
       navMenu.classList.remove('show');
@@ -494,39 +495,55 @@
 
   document.getElementById('blogForm').addEventListener('submit', async function(e) {
     e.preventDefault();
+
     const title = document.getElementById('blogTitle').value.trim();
     const author = document.getElementById('blogAuthor').value.trim();
     const tags = document.getElementById('blogTags').value.trim();
     const content = document.getElementById('blogContent').value.trim();
+
     if (!title || !author || !content) {
       alert("Please fill all required fields.");
       return;
     }
-   try {
-  const res = await fetch("https://iblog-backend-6i6b.onrender.com/api/blog", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      title: title,
-      author: author,
-      tags: tags,
-      content: content
-    })
-  });
 
-  const data = await res.json();
+    try {
+      console.log("🚀 Sending request...");
 
-  const successDiv = document.getElementById('successMsg');
-  successDiv.style.display = 'block';
-  document.getElementById('blogForm').reset();
-  setTimeout(() => successDiv.style.display = 'none', 3000);
+      const res = await fetch("https://iblog-backend-6i6b.onrender.com/api/blog", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          title: title,
+          author: author,
+          tags: tags,
+          content: content
+        })
+      });
 
-} catch (error) {
-  alert("Error saving blog ❌");
-}
+      console.log("✅ Response status:", res.status);
 
+      const data = await res.json();
+      console.log("📦 Response data:", data);
+
+      if (res.ok) {
+        const successDiv = document.getElementById('successMsg');
+        successDiv.style.display = 'block';
+
+        document.getElementById('blogForm').reset();
+        setTimeout(() => successDiv.style.display = 'none', 3000);
+
+        console.log("Saved:", data);
+      } else {
+        alert("Blog NOT saved ❌");
+        console.log("Error:", data);
+      }
+
+    } catch (error) {
+      console.log("❌ FULL ERROR:", error);
+      alert("Error saving blog ❌");
+    }
   });
 
   const AI_BTN = document.getElementById("ai-btn");
@@ -547,9 +564,11 @@
     const bubble = document.createElement("div");
     bubble.className = "bubble";
     bubble.innerText = text;
+
     const timeSpan = document.createElement("div");
     timeSpan.className = "timestamp";
     timeSpan.innerText = new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+
     msgDiv.appendChild(bubble);
     msgDiv.appendChild(timeSpan);
     CHAT_DIV.appendChild(msgDiv);
@@ -557,6 +576,7 @@
   }
 
   let thinkingEl = null;
+
   function showThinking() {
     if (thinkingEl) thinkingEl.remove();
     thinkingEl = document.createElement("div");
@@ -566,38 +586,52 @@
     CHAT_DIV.appendChild(thinkingEl);
     CHAT_DIV.scrollTop = CHAT_DIV.scrollHeight;
   }
-  function hideThinking() { if (thinkingEl) thinkingEl.remove(); thinkingEl = null; }
+
+  function hideThinking() {
+    if (thinkingEl) thinkingEl.remove();
+    thinkingEl = null;
+  }
 
   async function askAI() {
     const msg = MSG_INPUT.value.trim();
     if (!msg) return;
+
     addMsgToChat(msg, "user");
     MSG_INPUT.value = "";
     MSG_INPUT.disabled = true;
     showThinking();
+
     try {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 45000);
+
       const res = await fetch("https://iblog-backend-6i6b.onrender.com/api/ask-ai", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: msg }),
         signal: controller.signal
       });
+
       clearTimeout(timeout);
+
       const data = await res.json();
       hideThinking();
       addMsgToChat(data.reply || "No response.", "ai");
+
     } catch(err) {
       hideThinking();
-      addMsgToChat(" Backend error. Start python ai_backend.py", "ai");
+      console.log("❌ AI ERROR:", err);
+      addMsgToChat(" Backend error.", "ai");
     } finally {
       MSG_INPUT.disabled = false;
       MSG_INPUT.focus();
     }
   }
 
-  MSG_INPUT.addEventListener("keypress", (e) => { if (e.key === "Enter") askAI(); });
+  MSG_INPUT.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") askAI();
+  });
+
   window.addEventListener("click", (e) => {
     if (!AI_BOX.contains(e.target) && e.target !== AI_BTN && AI_BOX.style.display === "flex") {
       AI_BOX.style.display = "none";
