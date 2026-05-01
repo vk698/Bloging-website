@@ -634,10 +634,12 @@
 
     const userStr = localStorage.getItem('user');
     let userId = null;
+    let authorProfilePic = '';
     if (userStr) {
       try {
         const user = JSON.parse(userStr);
         userId = user.id;
+        authorProfilePic = user.profilePicture || '';
       } catch(e) {}
     }
 
@@ -658,6 +660,7 @@
         body: JSON.stringify({
           title: title,
           author: author,
+          authorProfilePic: authorProfilePic,
           tags: tags,
           content: content,
           userId: userId

@@ -99,8 +99,8 @@ app.put("/api/auth/update", authenticateToken, upload.single("profilePicture"), 
 
 app.post("/api/blog", async (req, res) => {
   try {
-    const { title, content, author, tags, userId } = req.body;
-    const newBlog = new Blog({ title, content, author, tags, userId });
+    const { title, content, author, authorProfilePic, tags, userId } = req.body;
+    const newBlog = new Blog({ title, content, author, authorProfilePic, tags, userId });
     await newBlog.save();
     res.json({ message: "Blog saved successfully " });
   } catch (error) {
@@ -229,7 +229,6 @@ app.post("/api/blog/:blogId/like", authenticateToken, async (req, res) => {
     res.status(500).json({ error: "Error toggling like" });
   }
 });
-
 
 app.post("/api/blog/:blogId/comment", authenticateToken, async (req, res) => {
   try {

@@ -10,7 +10,6 @@
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/mobile.css" />
   <style>
-    /* Keep your existing styles (unchanged up to modal content) */
     * {
       margin: 0;
       padding: 0;
@@ -254,6 +253,7 @@
       display: flex;
       gap: 1rem;
       flex-wrap: wrap;
+      align-items: center;
     }
     .blog-content-preview {
       color: #2c3e4e;
@@ -302,7 +302,7 @@
     }
     @keyframes modalFade {
       from { opacity: 0; transform: scale(0.95); }
-      to { opacity: 1;  transform: scale(1); }
+      to { opacity: 1; transform: scale(1); }
     }
     .close-modal {
       position: absolute;
@@ -334,6 +334,7 @@
       flex-wrap: wrap;
       border-bottom: 1px solid #ffe0cc;
       padding-bottom: 0.8rem;
+      align-items: center;
     }
     .modal .full-content {
       line-height: 1.7;
@@ -606,7 +607,7 @@
     <button class="close-modal">&times;</button>
     <h3 id="modalTitle"></h3>
     <div class="modal-meta">
-      <span><i class="fas fa-user-edit"></i> <span id="modalAuthor"></span></span>
+      <span id="modalAuthor"></span>
       <span><i class="far fa-calendar-alt"></i> <span id="modalDate"></span></span>
       <span><i class="fas fa-tag"></i> <span id="modalTags"></span></span>
     </div>
@@ -656,7 +657,6 @@
     });
   }
 
-  // Profile widget (same as homepage)
   function updateProfileWidget() {
     const widget = document.getElementById('profileWidget');
     if (!widget) return;
@@ -704,7 +704,6 @@
   }
   updateProfileWidget();
 
-  // Modal and blog data
   const modal = document.getElementById('blogModal');
   const modalTitle = document.getElementById('modalTitle');
   const modalAuthor = document.getElementById('modalAuthor');
@@ -731,7 +730,8 @@
   function openModal(blog) {
     currentBlog = blog;
     modalTitle.innerText = escapeHtml(blog.title);
-    modalAuthor.innerText = escapeHtml(blog.author);
+    const authorPic = blog.authorProfilePic ? escapeHtml(blog.authorProfilePic) : 'https://via.placeholder.com/24?text=U';
+    modalAuthor.innerHTML = `<img src="${authorPic}" style="width:24px; height:24px; border-radius:50%; vertical-align:middle; margin-right:8px;"> ${escapeHtml(blog.author)}`;
     const date = blog.createdAt ? new Date(blog.createdAt).toLocaleDateString() : 'Recently';
     modalDate.innerText = date;
     modalTags.innerText = escapeHtml(blog.tags) || 'General';
@@ -750,7 +750,6 @@
     if (e.target === modal) closeModal();
   };
 
-  // Like functionality
   async function toggleLike() {
     if (!currentBlog || !token) {
       alert("Please login to like.");
@@ -763,7 +762,11 @@
       });
       const data = await res.json();
       if (res.ok) {
-        currentBlog.likes = data.liked ? [...(currentBlog.likes || []), currentUser.id] : (currentBlog.likes || []).filter(id => id !== currentUser.id);
+        if (data.liked) {
+          currentBlog.likes = [...(currentBlog.likes || []), currentUser.id];
+        } else {
+          currentBlog.likes = (currentBlog.likes || []).filter(id => id !== currentUser.id);
+        }
         updateLikeUI();
       } else {
         alert(data.error || 'Error toggling like');
@@ -786,7 +789,6 @@
 
   likeBtn.onclick = toggleLike;
 
-  // Comments
   async function renderComments() {
     if (!currentBlog) return;
     const comments = currentBlog.comments || [];
@@ -843,7 +845,6 @@
   submitCommentBtn.onclick = addComment;
   commentInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') addComment(); });
 
-  // Load all blogs
   async function loadBlogs() {
     const container = document.getElementById('blogsList');
     container.innerHTML = '<div class="no-blogs"><i class="fas fa-spinner fa-pulse"></i> Loading stories...</div>';
@@ -862,10 +863,14 @@
         const date = blog.createdAt ? new Date(blog.createdAt).toLocaleDateString() : 'Recently';
         const tagsHtml = blog.tags ? escapeHtml(blog.tags) : 'General';
         const contentPreview = blog.content ? escapeHtml(blog.content.substring(0, 300)) : '';
+        const authorPic = blog.authorProfilePic ? escapeHtml(blog.authorProfilePic) : 'https://via.placeholder.com/20?text=U';
         card.innerHTML = `
           <h3><i class="fas fa-quote-left"></i> ${escapeHtml(blog.title)}</h3>
           <div class="blog-meta">
-            <span><i class="fas fa-user-edit"></i> ${escapeHtml(blog.author)}</span>
+            <span><i class="fas fa-user-edit"></i> 
+              <img src="${authorPic}" style="width:20px; height:20px; border-radius:50%; vertical-align:middle; margin-right:5px;">
+              ${escapeHtml(blog.author)}
+            </span>
             <span><i class="far fa-calendar-alt"></i> ${date}</span>
             <span><i class="fas fa-tag"></i> ${tagsHtml}</span>
           </div>
@@ -881,7 +886,6 @@
   }
   loadBlogs();
 
-  // AI assistant (unchanged)
   const AI_BTN = document.getElementById("ai-btn");
   const AI_BOX = document.getElementById("ai-box");
   const CHAT_DIV = document.getElementById("chat");

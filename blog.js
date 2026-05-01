@@ -12,6 +12,7 @@ const blogSchema = new mongoose.Schema({
   title: String,
   content: String,
   author: String,
+  authorProfilePic: { type: String, default: "" },
   tags: String,
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
