@@ -117,19 +117,12 @@
       border: none;
     }
     .nav-profile {
+      position: relative;
       display: flex;
       align-items: center;
       gap: 10px;
       margin-left: 10px;
-    }
-    .nav-profile a {
-      text-decoration: none;
-      color: #2c3e4e;
-      font-weight: 500;
-      transition: 0.2s;
-    }
-    .nav-profile a:hover {
-      color: #e67e22;
+      cursor: pointer;
     }
     .profile-avatar {
       width: 38px;
@@ -138,6 +131,50 @@
       object-fit: cover;
       border: 2px solid #e67e22;
       background: white;
+    }
+    .profile-name {
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      min-width: 160px;
+      display: none;
+      flex-direction: column;
+      z-index: 200;
+      overflow: hidden;
+      margin-top: 8px;
+      border: 1px solid #ffe0cc;
+    }
+    .dropdown-menu a {
+      padding: 12px 18px;
+      text-decoration: none;
+      color: #2c3e4e;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .dropdown-menu a:hover {
+      background: #fff0e0;
+      color: #e67e22;
+    }
+    .dropdown-menu.show {
+      display: flex;
+    }
+    .nav-profile .auth-links {
+      display: flex;
+      gap: 8px;
+    }
+    .nav-profile .auth-links a {
+      text-decoration: none;
+      color: #e67e22;
+      font-weight: 500;
     }
     .nav-right form {
       display: flex;
@@ -572,6 +609,17 @@
     });
   });
 
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+      if (m === '&') return '&amp;';
+      if (m === '<') return '&lt;';
+      if (m === '>') return '&gt;';
+      return m;
+    });
+  }
+
+  // Build dropdown menu
   function updateProfileWidget() {
     const widget = document.getElementById('profileWidget');
     if (!widget) return;
@@ -582,24 +630,42 @@
         const user = JSON.parse(userStr);
         const nameShort = user.name ? user.name.split(' ')[0] : 'User';
         const avatarUrl = user.profilePicture || 'https://via.placeholder.com/38?text=User';
-        widget.innerHTML = `<a href="profile.html" style="display: flex; align-items: center; gap: 8px; text-decoration: none;">
-          <img src="${avatarUrl}" class="profile-avatar" onerror="this.src='https://via.placeholder.com/38?text=User'">
-          <span style="font-weight: 500;">${escapeHtml(nameShort)}</span>
-        </a>`;
-      } catch(e) { widget.innerHTML = `<a href="login.html" style="color:#e67e22;">Login</a>`; }
+        // Create trigger element with image + name, and dropdown menu
+        widget.innerHTML = `
+          <div class="profile-trigger" style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+            <img src="${avatarUrl}" class="profile-avatar" onerror="this.src='https://via.placeholder.com/38?text=User'">
+            <span class="profile-name">${escapeHtml(nameShort)}</span>
+            <i class="fas fa-chevron-down" style="font-size: 12px;"></i>
+          </div>
+          <div class="dropdown-menu" id="profileDropdown">
+            <a href="profile.html"><i class="fas fa-user-circle"></i> Profile</a>
+            <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+          </div>
+        `;
+        const trigger = widget.querySelector('.profile-trigger');
+        const dropdown = widget.querySelector('.dropdown-menu');
+        trigger.addEventListener('click', (e) => {
+          e.stopPropagation();
+          dropdown.classList.toggle('show');
+        });
+        document.getElementById('logoutBtn').addEventListener('click', (e) => {
+          e.preventDefault();
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          window.location.reload();
+        });
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function closeDropdown(e) {
+          if (!widget.contains(e.target)) {
+            dropdown.classList.remove('show');
+          }
+        });
+      } catch(e) {
+        widget.innerHTML = `<div class="auth-links"><a href="login.html">Login</a> / <a href="signup.html">Signup</a></div>`;
+      }
     } else {
-      widget.innerHTML = `<a href="login.html" style="margin-right: 8px;">Login</a> / <a href="signup.html">Signup</a>`;
+      widget.innerHTML = `<div class="auth-links"><a href="login.html">Login</a> / <a href="signup.html">Signup</a></div>`;
     }
-  }
-
-  function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/[&<>]/g, function(m) {
-      if (m === '&') return '&amp;';
-      if (m === '<') return '&lt;';
-      if (m === '>') return '&gt;';
-      return m;
-    });
   }
 
   updateProfileWidget();
@@ -656,7 +722,6 @@
     try {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 45000);
-      
       const API_URL = "https://iblog-backend-6i6b.onrender.com/api/ask-ai";
       const res = await fetch(API_URL, {
         method: "POST",
