@@ -1,4 +1,5 @@
 const express = require("express");
+const app = express();
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const nodemailer = require("nodemailer");
@@ -10,7 +11,7 @@ mongoose.connect("mongodb+srv://vishalkumar2257r_db_user:oPKxmiOQQF09554e@cluste
 .then(() => console.log("MongoDB Connected "))
 .catch((err) => console.log("Error:", err));
 
-const Blog = require("./models/Blog");
+const Blog = require("./blog");
 
 // Create Blog API
 app.post("/api/blog", async (req, res) => {
@@ -26,7 +27,7 @@ app.post("/api/blog", async (req, res) => {
   }
 });
 
-const app = express();
+
 
 app.use(cors());
 app.use(bodyParser.json());
