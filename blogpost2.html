@@ -701,7 +701,7 @@
 </div>
 
 <script>
-  // Hamburger menu toggle
+  
   const menuToggle = document.getElementById('menuToggle');
   const navMenu = document.getElementById('navMenu');
   if (menuToggle && navMenu) {
@@ -715,7 +715,6 @@
     });
   }
 
-  // AI Assistant
   const AI_BTN = document.getElementById("ai-btn");
   const AI_BOX = document.getElementById("ai-box");
   const CHAT_DIV = document.getElementById("chat");
@@ -768,7 +767,7 @@
     try {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 45000);
-      const res = await fetch("http://localhost:5000/api/ask-ai", {
+      const res = await fetch("https://iblog-backend-6i6b.onrender.com/api/ask-ai", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: msg }),

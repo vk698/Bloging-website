@@ -10,7 +10,6 @@
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/mobile.css" />
   <style>
-    /* Your existing full styles (same as before) */
     * {
       margin: 0;
       padding: 0;
@@ -215,7 +214,6 @@
       border-radius: 3rem 3rem 0 0;
       font-size: 0.9rem;
     }
-    /* Modal styles */
     .modal {
       display: none;
       position: fixed;
@@ -280,21 +278,6 @@
       line-height: 1.7;
       font-size: 1rem;
     }
-    @media (max-width: 768px) {
-      .menu-icon { display: block; }
-      .nav-left ul { display: none; flex-direction: column; width: 100%; background: rgba(255,250,245,0.95); backdrop-filter: blur(14px); position: absolute; top: 70px; left: 0; right: 0; border-radius: 30px; padding: 1.2rem; gap: 1rem; z-index: 100; }
-      .nav-left ul.show { display: flex; }
-      .nav-left { width: 100%; justify-content: space-between; }
-      .nav-right { width: 100%; margin-top: 0.8rem; }
-      .nav-right form { justify-content: center; flex-wrap: wrap; }
-      .form-input { width: 100%; }
-      .navigation { flex-wrap: wrap; border-radius: 2rem; padding: 1rem; }
-      .blogs-container { width: 95%; }
-      #ai-box { left: 12px; bottom: 78px; width: calc(100vw - 30px); max-width: 320px; }
-      #ai-btn { left: 12px; bottom: 12px; width: 48px; height: 48px; font-size: 24px; }
-      .modal-content { padding: 1.2rem; width: 95%; }
-      .modal h3 { font-size: 1.4rem; }
-    }
     #ai-btn {
       position: fixed;
       bottom: 20px;
@@ -334,6 +317,91 @@
       font-family: 'Inter', sans-serif;
       animation: fadeScale 0.2s ease;
     }
+    @keyframes fadeScale {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    #ai-box::before {
+      content: "🐱 Kittu AI Assistant";
+      padding: 12px 16px;
+      background: linear-gradient(95deg, #e67e22, #f39c12);
+      color: white;
+      font-weight: 700;
+      font-size: 0.9rem;
+      display: block;
+    }
+    #chat {
+      height: 340px;
+      overflow-y: auto;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: #fffcf8;
+    }
+    .message {
+      display: flex;
+      flex-direction: column;
+      max-width: 88%;
+      animation: slideMsg 0.2s ease;
+    }
+    @keyframes slideMsg {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .message.user {
+      align-self: flex-end;
+    }
+    .message.ai {
+      align-self: flex-start;
+    }
+    .bubble {
+      padding: 8px 14px;
+      border-radius: 22px;
+      font-size: 0.85rem;
+      background: white;
+      border: 1px solid #f0e0d2;
+    }
+    .user .bubble {
+      background: #e67e22;
+      color: white;
+      border: none;
+      border-bottom-right-radius: 5px;
+    }
+    .ai .bubble {
+      background: #ffffff;
+      border-bottom-left-radius: 5px;
+    }
+    .timestamp {
+      font-size: 0.6rem;
+      color: #b0a89c;
+      margin: 3px 10px 0;
+    }
+    .input-wrapper {
+      display: flex;
+      border-top: 1px solid #f0dfcf;
+      background: white;
+    }
+    #ai-box input {
+      flex: 1;
+      border: none;
+      padding: 12px 14px;
+      font-size: 0.85rem;
+      outline: none;
+      background: #fffaf5;
+    }
+    #ai-box button {
+      border: none;
+      background: #e67e22;
+      color: white;
+      font-weight: 700;
+      padding: 0 18px;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+    #ai-box button:hover {
+      background: #d35400;
+    }
     .typing span {
       display: inline-block;
       width: 6px;
@@ -346,6 +414,73 @@
     @keyframes wave {
       0%,60%,100% { transform: translateY(0); opacity: 0.5; }
       30% { transform: translateY(-4px); opacity: 1; }
+    }
+    @media (max-width: 768px) {
+      .menu-icon {
+        display: block;
+      }
+      .nav-left ul {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        background: rgba(255, 250, 245, 0.95);
+        backdrop-filter: blur(14px);
+        position: absolute;
+        top: 70px;
+        left: 0;
+        right: 0;
+        border-radius: 30px;
+        padding: 1.2rem;
+        gap: 1rem;
+        z-index: 100;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      }
+      .nav-left ul.show {
+        display: flex;
+      }
+      .nav-left {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .nav-right {
+        width: 100%;
+        margin-top: 0.8rem;
+      }
+      .nav-right form {
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .form-input {
+        width: 100%;
+      }
+      .navigation {
+        flex-wrap: wrap;
+        border-radius: 2rem;
+        padding: 1rem;
+      }
+      .blogs-container {
+        width: 95%;
+      }
+      #ai-box {
+        left: 12px;
+        bottom: 78px;
+        width: calc(100vw - 30px);
+        max-width: 320px;
+      }
+      #ai-btn {
+        left: 12px;
+        bottom: 12px;
+        width: 48px;
+        height: 48px;
+        font-size: 24px;
+      }
+      .modal-content {
+        padding: 1.2rem;
+        width: 95%;
+      }
+      .modal h3 {
+        font-size: 1.4rem;
+      }
     }
   </style>
 </head>
@@ -381,7 +516,6 @@
   <p>Copyright &copy; iBlog.com — read, write, inspire</p>
 </div>
 
-<!-- Modal for full blog -->
 <div id="blogModal" class="modal">
   <div class="modal-content">
     <button class="close-modal">&times;</button>
@@ -405,7 +539,6 @@
 </div>
 
 <script>
-  // Menu toggle
   const menuToggle = document.getElementById('menuToggle');
   const navMenu = document.getElementById('navMenu');
   menuToggle.addEventListener('click', () => {
@@ -427,7 +560,6 @@
     });
   }
 
-  // Modal handling
   const modal = document.getElementById('blogModal');
   const modalTitle = document.getElementById('modalTitle');
   const modalAuthor = document.getElementById('modalAuthor');
@@ -455,7 +587,6 @@
     if (e.target === modal) closeModal();
   };
 
-  // Load blogs from backend API
   async function loadBlogs() {
     const container = document.getElementById('blogsList');
     container.innerHTML = '<div class="no-blogs"><i class="fas fa-spinner fa-pulse"></i> Loading stories...</div>';
@@ -487,7 +618,6 @@
           </div>
           <div class="blog-content-preview">${contentPreview}${blog.content.length > 300 ? '…' : ''}</div>
         `;
-        // Attach click event to open modal with full blog
         card.addEventListener('click', () => openModal(blog));
         container.appendChild(card);
       });
@@ -499,7 +629,6 @@
   
   loadBlogs();
 
-  // Kittu AI assistant (same as before)
   const AI_BTN = document.getElementById("ai-btn");
   const AI_BOX = document.getElementById("ai-box");
   const CHAT_DIV = document.getElementById("chat");
@@ -537,7 +666,10 @@
     CHAT_DIV.appendChild(thinkingEl);
     CHAT_DIV.scrollTop = CHAT_DIV.scrollHeight;
   }
-  function hideThinking() { if (thinkingEl) thinkingEl.remove(); thinkingEl = null; }
+  function hideThinking() {
+    if (thinkingEl) thinkingEl.remove();
+    thinkingEl = null;
+  }
 
   async function askAI() {
     const msg = MSG_INPUT.value.trim();
@@ -561,14 +693,18 @@
       addMsgToChat(data.reply || "No response.", "ai");
     } catch(err) {
       hideThinking();
-      addMsgToChat("AI service error. Try again later.", "ai");
+      let errMsg = "❌ Backend error. Make sure backend is deployed.";
+      if (err.name === "AbortError") errMsg = "⏰ Request timeout.";
+      addMsgToChat(errMsg, "ai");
     } finally {
       MSG_INPUT.disabled = false;
       MSG_INPUT.focus();
     }
   }
 
-  MSG_INPUT.addEventListener("keypress", (e) => { if (e.key === "Enter") askAI(); });
+  MSG_INPUT.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") askAI();
+  });
   window.addEventListener("click", (e) => {
     if (!AI_BOX.contains(e.target) && e.target !== AI_BTN && AI_BOX.style.display === "flex") {
       AI_BOX.style.display = "none";
