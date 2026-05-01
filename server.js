@@ -14,11 +14,17 @@ mongoose.connect("mongodb+srv://vishalkumar2257r_db_user:oPKxmiOQQF09554e@cluste
 const Blog = require("./blog");
 
 // Create Blog API
+
+
+
+
+app.use(cors());
+app.use(bodyParser.json());
 app.post("/api/blog", async (req, res) => {
   try {
-    const { title, content } = req.body;
+    const { title, content, author, tags } = req.body;
 
-    const newBlog = new Blog({ title, content });
+    const newBlog = new Blog({ title, content, author, tags });
     await newBlog.save();
 
     res.json({ message: "Blog saved successfully " });
@@ -26,11 +32,6 @@ app.post("/api/blog", async (req, res) => {
     res.status(500).json({ error: "Error saving blog" });
   }
 });
-
-
-
-app.use(cors());
-app.use(bodyParser.json());
 
 // Health check route (for Render)
 app.get("/api/health", (req, res) => {
