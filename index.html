@@ -4,6 +4,17 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover" />
   <title>iBlog – Heaven for Bloggers</title>
+  <meta name="description" content="iBlog – share your stories, discover ideas, and connect with readers. Free blogging platform with AI assistant and community blogs." />
+  <meta name="keywords" content="blog, write, publish, stories, iBlog, studyhub, education, learning" />
+  <meta name="author" content="iBlog Team" />
+  <meta property="og:title" content="iBlog – Heaven for Bloggers" />
+  <meta property="og:description" content="Write, share, and explore amazing blogs. Join our community of writers." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://vk698.github.io/iblog/" />
+  <meta property="og:image" content="https://vk698.github.io/iblog/img/logo.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="iBlog – Heaven for Bloggers" />
+  <meta name="twitter:description" content="Your voice matters – publish your stories and learn from others." />
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
   <link rel="stylesheet" href="css/utils.css" />
@@ -253,6 +264,73 @@
     }
     .content-right img:hover {
       transform: scale(1.02) rotate(1deg);
+    }
+    .studyhub-card {
+      background: white;
+      border-radius: 2rem;
+      margin: 2rem auto;
+      padding: 1.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      box-shadow: 0 20px 35px -8px rgba(0,0,0,0.1);
+      border: 1px solid rgba(230,126,34,0.2);
+      transition: all 0.3s ease;
+      background: linear-gradient(135deg, #ffffff 0%, #fffaf5 100%);
+    }
+    .studyhub-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 25px 40px -12px rgba(230,126,34,0.25);
+      border-color: #e67e22;
+    }
+    .card-content {
+      flex: 2;
+    }
+    .card-content h3 {
+      font-size: 1.8rem;
+      color: #e67e22;
+      margin-bottom: 0.5rem;
+    }
+    .card-content p {
+      color: #4a5b6e;
+      margin-bottom: 1rem;
+      line-height: 1.5;
+    }
+    .card-btn {
+      display: inline-block;
+      background: linear-gradient(95deg, #e67e22, #f39c12);
+      color: white;
+      padding: 0.7rem 1.8rem;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: 0.2s;
+      box-shadow: 0 4px 12px rgba(230,126,34,0.3);
+    }
+    .card-btn:hover {
+      transform: scale(0.96);
+      background: linear-gradient(95deg, #d35400, #e67e22);
+      box-shadow: 0 6px 14px rgba(230,126,34,0.4);
+    }
+    .card-icon {
+      flex: 1;
+      text-align: center;
+      font-size: 4rem;
+      color: #e67e22;
+    }
+    @media (max-width: 768px) {
+      .studyhub-card {
+        flex-direction: column;
+        text-align: center;
+      }
+      .card-icon {
+        font-size: 3rem;
+      }
+      .card-content h3 {
+        font-size: 1.5rem;
+      }
     }
     .home-articles {
       background: rgba(255, 255, 255, 0.85);
@@ -568,6 +646,19 @@
   </div>
 </div>
 
+<div class="max-width-1 m-auto">
+  <div class="studyhub-card">
+    <div class="card-content">
+      <h3><i class="fas fa-graduation-cap"></i> StudyHub – Free Learning Platform</h3>
+      <p>Access thousands of video lessons, study notes, mock tests, and community support. Learn anything, anytime – completely free.</p>
+      <a href="https://vk698.github.io/vk-education/" target="_blank" rel="noopener noreferrer" class="card-btn">Explore StudyHub →</a>
+    </div>
+    <div class="card-icon">
+      <i class="fas fa-chalkboard-user"></i>
+    </div>
+  </div>
+</div>
+
 <div class="max-width-1 m-auto"><hr /></div>
 
 <div class="home-articles max-width-1 m-auto">
@@ -619,7 +710,6 @@
     });
   }
 
-  // Build dropdown menu
   function updateProfileWidget() {
     const widget = document.getElementById('profileWidget');
     if (!widget) return;
@@ -630,7 +720,6 @@
         const user = JSON.parse(userStr);
         const nameShort = user.name ? user.name.split(' ')[0] : 'User';
         const avatarUrl = user.profilePicture || 'https://via.placeholder.com/38?text=User';
-        // Create trigger element with image + name, and dropdown menu
         widget.innerHTML = `
           <div class="profile-trigger" style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
             <img src="${avatarUrl}" class="profile-avatar" onerror="this.src='https://via.placeholder.com/38?text=User'">
@@ -654,7 +743,6 @@
           localStorage.removeItem('user');
           window.location.reload();
         });
-        // Close dropdown when clicking outside
         document.addEventListener('click', function closeDropdown(e) {
           if (!widget.contains(e.target)) {
             dropdown.classList.remove('show');
@@ -667,7 +755,6 @@
       widget.innerHTML = `<div class="auth-links"><a href="login.html">Login</a> / <a href="signup.html">Signup</a></div>`;
     }
   }
-
   updateProfileWidget();
 
   const AI_BTN = document.getElementById("ai-btn");
