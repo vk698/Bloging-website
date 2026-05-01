@@ -6,6 +6,11 @@ const nodemailer = require("nodemailer");
 const Groq = require("groq-sdk");
 require("dotenv").config();
 const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const multer = require("multer");
+
+const User = require("./User");
 
 mongoose.connect(process.env.MONGO_URI || "mongodb+srv://vishalkumar2257r_db_user:oPKxmiOQQF09554e@cluster0.pmyxiym.mongodb.net/myDatabase")
 .then(() => console.log("MongoDB Connected "))
@@ -15,6 +20,82 @@ const Blog = require("./blog");
 
 app.use(cors());
 app.use(bodyParser.json());
+
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+  if (!token) return res.status(401).json({ error: "Access denied" });
+  jwt.verify(token, process.env.JWT_SECRET || "your_jwt_secret_key", (err, user) => {
+    if (err) return res.status(403).json({ error: "Invalid token" });
+    req.user = user;
+    next();
+  });
+};
+
+const storage = multer.memoryStorage();
+const upload = multer({ limits: { fileSize: 5 * 1024 * 1024 } });
+
+app.post("/api/auth/signup", async (req, res) => {
+  try {
+    const { name, email, password, profilePicture, bio } = req.body;
+    const existingUser = await User.findOne({ email });
+    if (existingUser) return res.status(400).json({ error: "Email already exists" });
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = new User({
+      name,
+      email,
+      password: hashedPassword,
+      profilePicture: profilePicture || "",
+      bio: bio || "",
+    });
+    await newUser.save();
+    const token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET || "your_jwt_secret_key", { expiresIn: "7d" });
+    res.json({ token, user: { id: newUser._id, name: newUser.name, email: newUser.email, profilePicture: newUser.profilePicture, bio: newUser.bio } });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Signup failed" });
+  }
+});
+
+app.post("/api/auth/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) return res.status(400).json({ error: "Invalid credentials" });
+    const valid = await bcrypt.compare(password, user.password);
+    if (!valid) return res.status(400).json({ error: "Invalid credentials" });
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET || "your_jwt_secret_key", { expiresIn: "7d" });
+    res.json({ token, user: { id: user._id, name: user.name, email: user.email, profilePicture: user.profilePicture, bio: user.bio } });
+  } catch (error) {
+    res.status(500).json({ error: "Login failed" });
+  }
+});
+
+app.get("/api/auth/me", authenticateToken, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId).select("-password");
+    if (!user) return res.status(404).json({ error: "User not found" });
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+app.put("/api/auth/update", authenticateToken, upload.single("profilePicture"), async (req, res) => {
+  try {
+    const { name, bio } = req.body;
+    const updateData = { name, bio };
+    if (req.file) {
+      const base64 = req.file.buffer.toString('base64');
+      const mimeType = req.file.mimetype;
+      updateData.profilePicture = `data:${mimeType};base64,${base64}`;
+    }
+    const user = await User.findByIdAndUpdate(req.user.userId, updateData, { new: true }).select("-password");
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ error: "Update failed" });
+  }
+});
 
 app.post("/api/blog", async (req, res) => {
   try {
@@ -26,7 +107,7 @@ app.post("/api/blog", async (req, res) => {
     res.status(500).json({ error: "Error saving blog" });
   }
 });
-// GET - Fetch all blogs (latest first)
+
 app.get("/api/blog", async (req, res) => {
   try {
     const blogs = await Blog.find().sort({ createdAt: -1 });

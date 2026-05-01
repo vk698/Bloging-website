@@ -74,6 +74,7 @@
       display: flex;
       align-items: center;
       gap: 1.5rem;
+      flex-wrap: wrap;
     }
     .nav-left ul {
       display: flex;
@@ -114,6 +115,29 @@
       color: #e67e22;
       background: none;
       border: none;
+    }
+    .nav-profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-left: 10px;
+    }
+    .nav-profile a {
+      text-decoration: none;
+      color: #2c3e4e;
+      font-weight: 500;
+      transition: 0.2s;
+    }
+    .nav-profile a:hover {
+      color: #e67e22;
+    }
+    .profile-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #e67e22;
+      background: white;
     }
     .nav-right form {
       display: flex;
@@ -415,6 +439,12 @@
       .nav-left {
         width: 100%;
         justify-content: space-between;
+        flex-wrap: wrap;
+      }
+      .nav-profile {
+        order: 2;
+        margin-left: 0;
+        margin-top: 0.5rem;
       }
       .nav-right {
         width: 100%;
@@ -479,6 +509,7 @@
       <li><a href="contact.html">Contact</a></li>
       <li><a href="blogs.html">All Blogs</a></li>
     </ul>
+    <div class="nav-profile" id="profileWidget"></div>
   </div>
   <div class="nav-right">
     <form action="search.html" method="get">
@@ -540,6 +571,38 @@
       navMenu.classList.remove('show');
     });
   });
+
+  function updateProfileWidget() {
+    const widget = document.getElementById('profileWidget');
+    if (!widget) return;
+    const token = localStorage.getItem('token');
+    const userStr = localStorage.getItem('user');
+    if (token && userStr) {
+      try {
+        const user = JSON.parse(userStr);
+        const nameShort = user.name ? user.name.split(' ')[0] : 'User';
+        const avatarUrl = user.profilePicture || 'https://via.placeholder.com/38?text=User';
+        widget.innerHTML = `<a href="profile.html" style="display: flex; align-items: center; gap: 8px; text-decoration: none;">
+          <img src="${avatarUrl}" class="profile-avatar" onerror="this.src='https://via.placeholder.com/38?text=User'">
+          <span style="font-weight: 500;">${escapeHtml(nameShort)}</span>
+        </a>`;
+      } catch(e) { widget.innerHTML = `<a href="login.html" style="color:#e67e22;">Login</a>`; }
+    } else {
+      widget.innerHTML = `<a href="login.html" style="margin-right: 8px;">Login</a> / <a href="signup.html">Signup</a>`;
+    }
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+      if (m === '&') return '&amp;';
+      if (m === '<') return '&lt;';
+      if (m === '>') return '&gt;';
+      return m;
+    });
+  }
+
+  updateProfileWidget();
 
   const AI_BTN = document.getElementById("ai-btn");
   const AI_BOX = document.getElementById("ai-box");
