@@ -99,8 +99,8 @@ app.put("/api/auth/update", authenticateToken, upload.single("profilePicture"), 
 
 app.post("/api/blog", async (req, res) => {
   try {
-    const { title, content, author, tags } = req.body;
-    const newBlog = new Blog({ title, content, author, tags });
+    const { title, content, author, tags, userId } = req.body;
+    const newBlog = new Blog({ title, content, author, tags, userId });
     await newBlog.save();
     res.json({ message: "Blog saved successfully " });
   } catch (error) {
@@ -186,6 +186,69 @@ app.post("/send-message", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.json({ success: false, error });
+  }
+});
+
+app.get("/api/blog/user/:userId", async (req, res) => {
+  try {
+    const blogs = await Blog.find({ userId: req.params.userId }).sort({ createdAt: -1 });
+    res.json(blogs);
+  } catch (error) {
+    res.status(500).json({ error: "Error fetching user blogs" });
+  }
+});
+
+app.delete("/api/blog/:blogId", authenticateToken, async (req, res) => {
+  try {
+    const blog = await Blog.findById(req.params.blogId);
+    if (!blog) return res.status(404).json({ error: "Blog not found" });
+    if (blog.userId && blog.userId.toString() !== req.user.userId) {
+      return res.status(403).json({ error: "Unauthorized" });
+    }
+    await Blog.findByIdAndDelete(req.params.blogId);
+    res.json({ message: "Blog deleted" });
+  } catch (error) {
+    res.status(500).json({ error: "Delete failed" });
+  }
+});
+
+app.post("/api/blog/:blogId/like", authenticateToken, async (req, res) => {
+  try {
+    const blog = await Blog.findById(req.params.blogId);
+    if (!blog) return res.status(404).json({ error: "Blog not found" });
+    const userId = req.user.userId;
+    const liked = blog.likes.includes(userId);
+    if (liked) {
+      blog.likes = blog.likes.filter(id => id.toString() !== userId);
+    } else {
+      blog.likes.push(userId);
+    }
+    await blog.save();
+    res.json({ liked: !liked, count: blog.likes.length });
+  } catch (error) {
+    res.status(500).json({ error: "Error toggling like" });
+  }
+});
+
+
+app.post("/api/blog/:blogId/comment", authenticateToken, async (req, res) => {
+  try {
+    const { text } = req.body;
+    if (!text) return res.status(400).json({ error: "Comment text required" });
+    const blog = await Blog.findById(req.params.blogId);
+    if (!blog) return res.status(404).json({ error: "Blog not found" });
+    const user = await User.findById(req.user.userId).select("name profilePicture");
+    blog.comments.push({
+      userId: user._id,
+      userName: user.name,
+      userProfilePic: user.profilePicture || "",
+      text: text
+    });
+    await blog.save();
+    const newComment = blog.comments[blog.comments.length - 1];
+    res.json(newComment);
+  } catch (error) {
+    res.status(500).json({ error: "Error adding comment" });
   }
 });
 

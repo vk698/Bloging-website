@@ -9,16 +9,95 @@
   <link rel="stylesheet" href="css/utils.css">
   <link rel="stylesheet" href="css/style.css">
   <style>
-    body { background: linear-gradient(145deg, #fff8f0 0%, #ffe6d5 100%); font-family: 'Inter', sans-serif; }
-    .profile-container { max-width: 700px; margin: 3rem auto; background: white; border-radius: 32px; padding: 2rem; }
-    .avatar { text-align: center; margin-bottom: 2rem; }
-    .avatar img { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid #e67e22; }
-    .form-group { margin-bottom: 1.2rem; }
-    label { font-weight: 600; }
-    input, textarea { width: 100%; padding: 10px; border: 1px solid #ffe0cc; border-radius: 20px; }
-    button { background: #e67e22; color: white; border: none; padding: 10px 24px; border-radius: 40px; cursor: pointer; }
-    .btn-secondary { background: #95a5a6; }
-    .logout { margin-top: 2rem; text-align: center; }
+    body {
+      background: linear-gradient(145deg, #fff8f0 0%, #ffe6d5 100%);
+      font-family: 'Inter', sans-serif;
+    }
+    .profile-container {
+      max-width: 900px;
+      margin: 3rem auto;
+      background: white;
+      border-radius: 32px;
+      padding: 2rem;
+      box-shadow: 0 20px 35px -8px rgba(0,0,0,0.1);
+    }
+    .avatar {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .avatar img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #e67e22;
+    }
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+    label {
+      font-weight: 600;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ffe0cc;
+      border-radius: 20px;
+      font-family: inherit;
+    }
+    button {
+      background: #e67e22;
+      color: white;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 40px;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+    .btn-secondary {
+      background: #95a5a6;
+    }
+    .btn-danger {
+      background: #e74c3c;
+    }
+    .close-btn {
+      background: #7f8c8d;
+    }
+    .blogs-section {
+      margin-top: 2rem;
+      border-top: 2px solid #ffe0cc;
+      padding-top: 1.5rem;
+    }
+    .blog-item {
+      background: #fffaf5;
+      border-radius: 20px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .blog-info h4 {
+      color: #e67e22;
+      margin-bottom: 5px;
+    }
+    .blog-info p {
+      font-size: 0.85rem;
+      color: #666;
+    }
+    .delete-blog {
+      background: #e74c3c;
+      color: white;
+      border: none;
+      padding: 5px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+    .logout {
+      margin-top: 2rem;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
@@ -38,6 +117,9 @@
 </nav>
 
 <div class="profile-container">
+  <div style="display: flex; justify-content: flex-end;">
+    <button class="close-btn" id="closeProfileBtn"><i class="fas fa-times"></i> Close</button>
+  </div>
   <h2 style="color:#e67e22;">My Profile</h2>
   <div class="avatar">
     <img id="profileImg" src="https://via.placeholder.com/120" alt="Profile">
@@ -61,6 +143,12 @@
     </div>
     <button type="submit">Update Profile</button>
   </form>
+
+  <div class="blogs-section">
+    <h3><i class="fas fa-pen-nib"></i> My Blogs</h3>
+    <div id="myBlogsList">Loading your blogs...</div>
+  </div>
+
   <div class="logout">
     <button id="logoutBtn" class="btn-secondary">Logout</button>
   </div>
@@ -70,7 +158,8 @@
   const token = localStorage.getItem('token');
   if (!token) window.location.href = 'login.html';
 
-  // Load user data
+  let currentUser = null;
+
   async function loadProfile() {
     try {
       const res = await fetch('https://iblog-backend-6i6b.onrender.com/api/auth/me', {
@@ -78,12 +167,14 @@
       });
       const user = await res.json();
       if (res.ok) {
+        currentUser = user;
         document.getElementById('name').value = user.name;
         document.getElementById('email').value = user.email;
         document.getElementById('bio').value = user.bio || '';
         if (user.profilePicture) {
           document.getElementById('profileImg').src = user.profilePicture;
         }
+        loadMyBlogs(user._id);
       } else {
         alert('Session expired. Please login again.');
         localStorage.clear();
@@ -92,9 +183,53 @@
     } catch (err) { console.error(err); }
   }
 
-  loadProfile();
+  async function loadMyBlogs(userId) {
+    const container = document.getElementById('myBlogsList');
+    try {
+      const res = await fetch(`https://iblog-backend-6i6b.onrender.com/api/blog/user/${userId}`);
+      const blogs = await res.json();
+      if (blogs.length === 0) {
+        container.innerHTML = '<p>No blogs yet. <a href="create-blog.html">Create your first blog</a>.</p>';
+        return;
+      }
+      container.innerHTML = '';
+      blogs.forEach(blog => {
+        const div = document.createElement('div');
+        div.className = 'blog-item';
+        div.innerHTML = `
+          <div class="blog-info">
+            <h4>${escapeHtml(blog.title)}</h4>
+            <p>${escapeHtml(blog.content.substring(0, 100))}...</p>
+            <small>${new Date(blog.createdAt).toLocaleDateString()}</small>
+          </div>
+          <button class="delete-blog" data-id="${blog._id}"><i class="fas fa-trash"></i> Delete</button>
+        `;
+        container.appendChild(div);
+      });
+      document.querySelectorAll('.delete-blog').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+          const blogId = btn.getAttribute('data-id');
+          if (confirm('Delete this blog?')) {
+            await deleteBlog(blogId);
+            loadMyBlogs(userId);
+          }
+        });
+      });
+    } catch (err) {
+      container.innerHTML = '<p>Error loading blogs.</p>';
+    }
+  }
 
-  // Update profile with image upload
+  async function deleteBlog(blogId) {
+    try {
+      const res = await fetch(`https://iblog-backend-6i6b.onrender.com/api/blog/${blogId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (!res.ok) alert('Delete failed');
+    } catch (err) { alert('Error deleting'); }
+  }
+
   document.getElementById('profileForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const name = document.getElementById('name').value;
@@ -103,9 +238,7 @@
     const formData = new FormData();
     formData.append('name', name);
     formData.append('bio', bio);
-    if (fileInput.files[0]) {
-      formData.append('profilePicture', fileInput.files[0]);
-    }
+    if (fileInput.files[0]) formData.append('profilePicture', fileInput.files[0]);
 
     try {
       const res = await fetch('https://iblog-backend-6i6b.onrender.com/api/auth/update', {
@@ -116,13 +249,9 @@
       const updatedUser = await res.json();
       if (res.ok) {
         localStorage.setItem('user', JSON.stringify(updatedUser));
-        if (updatedUser.profilePicture) {
-          document.getElementById('profileImg').src = updatedUser.profilePicture;
-        }
+        if (updatedUser.profilePicture) document.getElementById('profileImg').src = updatedUser.profilePicture;
         alert('Profile updated!');
-      } else {
-        alert(updatedUser.error || 'Update failed');
-      }
+      } else alert(updatedUser.error || 'Update failed');
     } catch (err) { alert('Error updating profile'); }
   });
 
@@ -130,6 +259,21 @@
     localStorage.clear();
     window.location.href = 'index.html';
   };
+  document.getElementById('closeProfileBtn').onclick = () => {
+    window.location.href = 'index.html';
+  };
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+      if (m === '&') return '&amp;';
+      if (m === '<') return '&lt;';
+      if (m === '>') return '&gt;';
+      return m;
+    });
+  }
+
+  loadProfile();
 </script>
 </body>
 </html>

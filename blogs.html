@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/mobile.css" />
   <style>
+    /* Keep your existing styles (unchanged up to modal content) */
     * {
       margin: 0;
       padding: 0;
@@ -112,6 +113,66 @@
       color: #e67e22;
       background: none;
       border: none;
+    }
+    .nav-profile {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-left: 10px;
+      cursor: pointer;
+    }
+    .profile-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #e67e22;
+      background: white;
+    }
+    .profile-name {
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      min-width: 160px;
+      display: none;
+      flex-direction: column;
+      z-index: 200;
+      overflow: hidden;
+      margin-top: 8px;
+      border: 1px solid #ffe0cc;
+    }
+    .dropdown-menu a {
+      padding: 12px 18px;
+      text-decoration: none;
+      color: #2c3e4e;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .dropdown-menu a:hover {
+      background: #fff0e0;
+      color: #e67e22;
+    }
+    .dropdown-menu.show {
+      display: flex;
+    }
+    .nav-profile .auth-links {
+      display: flex;
+      gap: 8px;
+    }
+    .nav-profile .auth-links a {
+      text-decoration: none;
+      color: #e67e22;
+      font-weight: 500;
     }
     .nav-right form {
       display: flex;
@@ -241,7 +302,7 @@
     }
     @keyframes modalFade {
       from { opacity: 0; transform: scale(0.95); }
-      to { opacity: 1; transform: scale(1); }
+      to { opacity: 1; transparent; transform: scale(1); }
     }
     .close-modal {
       position: absolute;
@@ -277,6 +338,88 @@
     .modal .full-content {
       line-height: 1.7;
       font-size: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .like-section {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 1.5rem;
+      border-top: 1px solid #ffe0cc;
+      padding-top: 1rem;
+    }
+    .like-btn {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #e67e22;
+      transition: transform 0.1s;
+    }
+    .like-btn.liked {
+      color: #e74c3c;
+    }
+    .like-btn:hover {
+      transform: scale(1.1);
+    }
+    .comments-section {
+      margin-top: 1rem;
+    }
+    .comment {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 1rem;
+      align-items: flex-start;
+    }
+    .comment-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .comment-bubble {
+      background: #f8f4f0;
+      border-radius: 18px;
+      padding: 8px 14px;
+      flex: 1;
+    }
+    .comment-name {
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: #e67e22;
+    }
+    .comment-text {
+      font-size: 0.9rem;
+      margin-top: 4px;
+    }
+    .comment-time {
+      font-size: 0.7rem;
+      color: #aaa;
+      margin-left: 10px;
+    }
+    .add-comment {
+      display: flex;
+      gap: 12px;
+      margin-top: 1rem;
+      align-items: center;
+    }
+    .add-comment input {
+      flex: 1;
+      padding: 10px;
+      border-radius: 30px;
+      border: 1px solid #ffe0cc;
+      outline: none;
+    }
+    .add-comment button {
+      background: #e67e22;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 30px;
+      color: white;
+      cursor: pointer;
     }
     #ai-btn {
       position: fixed;
@@ -349,12 +492,8 @@
       from { opacity: 0; transform: translateY(8px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    .message.user {
-      align-self: flex-end;
-    }
-    .message.ai {
-      align-self: flex-start;
-    }
+    .message.user { align-self: flex-end; }
+    .message.ai { align-self: flex-start; }
     .bubble {
       padding: 8px 14px;
       border-radius: 22px;
@@ -416,71 +555,16 @@
       30% { transform: translateY(-4px); opacity: 1; }
     }
     @media (max-width: 768px) {
-      .menu-icon {
-        display: block;
-      }
-      .nav-left ul {
-        display: none;
-        flex-direction: column;
-        width: 100%;
-        background: rgba(255, 250, 245, 0.95);
-        backdrop-filter: blur(14px);
-        position: absolute;
-        top: 70px;
-        left: 0;
-        right: 0;
-        border-radius: 30px;
-        padding: 1.2rem;
-        gap: 1rem;
-        z-index: 100;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-      }
-      .nav-left ul.show {
-        display: flex;
-      }
-      .nav-left {
-        width: 100%;
-        justify-content: space-between;
-      }
-      .nav-right {
-        width: 100%;
-        margin-top: 0.8rem;
-      }
-      .nav-right form {
-        justify-content: center;
-        flex-wrap: wrap;
-      }
-      .form-input {
-        width: 100%;
-      }
-      .navigation {
-        flex-wrap: wrap;
-        border-radius: 2rem;
-        padding: 1rem;
-      }
-      .blogs-container {
-        width: 95%;
-      }
-      #ai-box {
-        left: 12px;
-        bottom: 78px;
-        width: calc(100vw - 30px);
-        max-width: 320px;
-      }
-      #ai-btn {
-        left: 12px;
-        bottom: 12px;
-        width: 48px;
-        height: 48px;
-        font-size: 24px;
-      }
-      .modal-content {
-        padding: 1.2rem;
-        width: 95%;
-      }
-      .modal h3 {
-        font-size: 1.4rem;
-      }
+      .menu-icon { display: block; }
+      .nav-left ul { display: none; flex-direction: column; position: absolute; top: 70px; left: 0; right: 0; background: rgba(255,250,245,0.95); border-radius: 30px; padding: 1.2rem; z-index: 100; }
+      .nav-left ul.show { display: flex; }
+      .nav-left { flex-wrap: wrap; }
+      .nav-profile { order: 2; margin-top: 0.5rem; }
+      .nav-right { width: 100%; margin-top: 0.8rem; }
+      .navigation { flex-wrap: wrap; }
+      .blog-card { margin: 1rem; }
+      .modal-content { padding: 1rem; width: 95%; }
+      .modal h3 { font-size: 1.4rem; }
     }
   </style>
 </head>
@@ -496,6 +580,7 @@
       <li><a href="contact.html">Contact</a></li>
       <li><a href="blogs.html">All Blogs</a></li>
     </ul>
+    <div class="nav-profile" id="profileWidget"></div>
   </div>
   <div class="nav-right">
     <form action="search.html" method="get">
@@ -526,6 +611,17 @@
       <span><i class="fas fa-tag"></i> <span id="modalTags"></span></span>
     </div>
     <div id="modalContent" class="full-content"></div>
+    <div class="like-section" id="likeSection">
+      <button class="like-btn" id="likeBtn"><i class="fas fa-heart"></i> <span id="likeCount">0</span></button>
+    </div>
+    <div class="comments-section" id="commentsSection">
+      <h4>Comments</h4>
+      <div id="commentsList"></div>
+      <div class="add-comment" id="addCommentBox">
+        <input type="text" id="commentInput" placeholder="Write a comment...">
+        <button id="submitCommentBtn">Post</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -560,6 +656,55 @@
     });
   }
 
+  // Profile widget (same as homepage)
+  function updateProfileWidget() {
+    const widget = document.getElementById('profileWidget');
+    if (!widget) return;
+    const token = localStorage.getItem('token');
+    const userStr = localStorage.getItem('user');
+    if (token && userStr) {
+      try {
+        const user = JSON.parse(userStr);
+        const nameShort = user.name ? user.name.split(' ')[0] : 'User';
+        const avatarUrl = user.profilePicture || 'https://via.placeholder.com/38?text=User';
+        widget.innerHTML = `
+          <div class="profile-trigger" style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+            <img src="${avatarUrl}" class="profile-avatar" onerror="this.src='https://via.placeholder.com/38?text=User'">
+            <span class="profile-name">${escapeHtml(nameShort)}</span>
+            <i class="fas fa-chevron-down" style="font-size: 12px;"></i>
+          </div>
+          <div class="dropdown-menu" id="profileDropdown">
+            <a href="profile.html"><i class="fas fa-user-circle"></i> Profile</a>
+            <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+          </div>
+        `;
+        const trigger = widget.querySelector('.profile-trigger');
+        const dropdown = widget.querySelector('.dropdown-menu');
+        trigger.addEventListener('click', (e) => {
+          e.stopPropagation();
+          dropdown.classList.toggle('show');
+        });
+        document.getElementById('logoutBtn').addEventListener('click', (e) => {
+          e.preventDefault();
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          window.location.reload();
+        });
+        document.addEventListener('click', function closeDropdown(e) {
+          if (!widget.contains(e.target)) {
+            dropdown.classList.remove('show');
+          }
+        });
+      } catch(e) {
+        widget.innerHTML = `<div class="auth-links"><a href="login.html">Login</a> / <a href="signup.html">Signup</a></div>`;
+      }
+    } else {
+      widget.innerHTML = `<div class="auth-links"><a href="login.html">Login</a> / <a href="signup.html">Signup</a></div>`;
+    }
+  }
+  updateProfileWidget();
+
+  // Modal and blog data
   const modal = document.getElementById('blogModal');
   const modalTitle = document.getElementById('modalTitle');
   const modalAuthor = document.getElementById('modalAuthor');
@@ -567,40 +712,149 @@
   const modalTags = document.getElementById('modalTags');
   const modalContent = document.getElementById('modalContent');
   const closeModalBtn = document.querySelector('.close-modal');
+  const likeBtn = document.getElementById('likeBtn');
+  const likeCountSpan = document.getElementById('likeCount');
+  const commentsListDiv = document.getElementById('commentsList');
+  const commentInput = document.getElementById('commentInput');
+  const submitCommentBtn = document.getElementById('submitCommentBtn');
+
+  let currentBlog = null;
+  let currentUser = null;
+  const token = localStorage.getItem('token');
+  if (token) {
+    try {
+      const userStr = localStorage.getItem('user');
+      if (userStr) currentUser = JSON.parse(userStr);
+    } catch(e) {}
+  }
 
   function openModal(blog) {
+    currentBlog = blog;
     modalTitle.innerText = escapeHtml(blog.title);
     modalAuthor.innerText = escapeHtml(blog.author);
     const date = blog.createdAt ? new Date(blog.createdAt).toLocaleDateString() : 'Recently';
     modalDate.innerText = date;
     modalTags.innerText = escapeHtml(blog.tags) || 'General';
     modalContent.innerText = escapeHtml(blog.content);
+    updateLikeUI();
+    renderComments();
     modal.style.display = 'flex';
   }
 
   function closeModal() {
     modal.style.display = 'none';
+    currentBlog = null;
   }
-
   closeModalBtn.onclick = closeModal;
   window.onclick = function(e) {
     if (e.target === modal) closeModal();
   };
 
+  // Like functionality
+  async function toggleLike() {
+    if (!currentBlog || !token) {
+      alert("Please login to like.");
+      return;
+    }
+    try {
+      const res = await fetch(`https://iblog-backend-6i6b.onrender.com/api/blog/${currentBlog._id}/like`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (res.ok) {
+        currentBlog.likes = data.liked ? [...(currentBlog.likes || []), currentUser.id] : (currentBlog.likes || []).filter(id => id !== currentUser.id);
+        updateLikeUI();
+      } else {
+        alert(data.error || 'Error toggling like');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Server error');
+    }
+  }
+
+  function updateLikeUI() {
+    const liked = currentBlog.likes && currentBlog.likes.includes(currentUser?.id);
+    likeCountSpan.innerText = currentBlog.likes ? currentBlog.likes.length : 0;
+    if (liked) {
+      likeBtn.classList.add('liked');
+    } else {
+      likeBtn.classList.remove('liked');
+    }
+  }
+
+  likeBtn.onclick = toggleLike;
+
+  // Comments
+  async function renderComments() {
+    if (!currentBlog) return;
+    const comments = currentBlog.comments || [];
+    if (comments.length === 0) {
+      commentsListDiv.innerHTML = '<p><em>No comments yet.</em></p>';
+      return;
+    }
+    commentsListDiv.innerHTML = '';
+    comments.forEach(comment => {
+      const commentDiv = document.createElement('div');
+      commentDiv.className = 'comment';
+      const avatar = comment.userProfilePic && comment.userProfilePic !== '' ? comment.userProfilePic : 'https://via.placeholder.com/32?text=U';
+      commentDiv.innerHTML = `
+        <img src="${avatar}" class="comment-avatar" onerror="this.src='https://via.placeholder.com/32?text=U'">
+        <div class="comment-bubble">
+          <span class="comment-name">${escapeHtml(comment.userName)}</span>
+          <div class="comment-text">${escapeHtml(comment.text)}</div>
+          <span class="comment-time">${new Date(comment.createdAt).toLocaleString()}</span>
+        </div>
+      `;
+      commentsListDiv.appendChild(commentDiv);
+    });
+  }
+
+  async function addComment() {
+    const text = commentInput.value.trim();
+    if (!text) return;
+    if (!token) {
+      alert("Please login to comment.");
+      return;
+    }
+    try {
+      const res = await fetch(`https://iblog-backend-6i6b.onrender.com/api/blog/${currentBlog._id}/comment`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ text })
+      });
+      const newComment = await res.json();
+      if (res.ok) {
+        currentBlog.comments.push(newComment);
+        renderComments();
+        commentInput.value = '';
+      } else {
+        alert(newComment.error || 'Error posting comment');
+      }
+    } catch (err) {
+      alert('Server error');
+    }
+  }
+
+  submitCommentBtn.onclick = addComment;
+  commentInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') addComment(); });
+
+  // Load all blogs
   async function loadBlogs() {
     const container = document.getElementById('blogsList');
     container.innerHTML = '<div class="no-blogs"><i class="fas fa-spinner fa-pulse"></i> Loading stories...</div>';
-    
     try {
       const res = await fetch('https://iblog-backend-6i6b.onrender.com/api/blog');
       if (!res.ok) throw new Error('Failed to fetch');
       const blogs = await res.json();
-      
       if (blogs.length === 0) {
         container.innerHTML = '<div class="no-blogs"><i class="fas fa-feather-alt fa-2x"></i><p>No blogs yet. <a href="create-blog.html" style="color:#e67e22;">Create your first blog</a>!</p></div>';
         return;
       }
-      
       container.innerHTML = '';
       blogs.forEach(blog => {
         const card = document.createElement('div');
@@ -608,7 +862,6 @@
         const date = blog.createdAt ? new Date(blog.createdAt).toLocaleDateString() : 'Recently';
         const tagsHtml = blog.tags ? escapeHtml(blog.tags) : 'General';
         const contentPreview = blog.content ? escapeHtml(blog.content.substring(0, 300)) : '';
-        
         card.innerHTML = `
           <h3><i class="fas fa-quote-left"></i> ${escapeHtml(blog.title)}</h3>
           <div class="blog-meta">
@@ -622,25 +875,23 @@
         container.appendChild(card);
       });
     } catch (error) {
-      console.error('Error loading blogs:', error);
-      container.innerHTML = '<div class="no-blogs"><i class="fas fa-exclamation-triangle"></i><p>Could not load blogs. Please try again later.</p></div>';
+      console.error(error);
+      container.innerHTML = '<div class="no-blogs"><i class="fas fa-exclamation-triangle"></i><p>Could not load blogs.</p></div>';
     }
   }
-  
   loadBlogs();
 
+  // AI assistant (unchanged)
   const AI_BTN = document.getElementById("ai-btn");
   const AI_BOX = document.getElementById("ai-box");
   const CHAT_DIV = document.getElementById("chat");
   const MSG_INPUT = document.getElementById("msg");
-
   AI_BTN.onclick = () => {
     AI_BOX.style.display = AI_BOX.style.display === "flex" ? "none" : "flex";
     if (AI_BOX.style.display === "flex" && CHAT_DIV.children.length === 0) {
       addMsgToChat("👋 I'm Kittu AI. Want to discover great blogs?", "ai");
     }
   };
-
   function addMsgToChat(text, sender) {
     const msgDiv = document.createElement("div");
     msgDiv.className = `message ${sender}`;
@@ -655,7 +906,6 @@
     CHAT_DIV.appendChild(msgDiv);
     CHAT_DIV.scrollTop = CHAT_DIV.scrollHeight;
   }
-
   let thinkingEl = null;
   function showThinking() {
     if (thinkingEl) thinkingEl.remove();
@@ -666,11 +916,7 @@
     CHAT_DIV.appendChild(thinkingEl);
     CHAT_DIV.scrollTop = CHAT_DIV.scrollHeight;
   }
-  function hideThinking() {
-    if (thinkingEl) thinkingEl.remove();
-    thinkingEl = null;
-  }
-
+  function hideThinking() { if (thinkingEl) thinkingEl.remove(); thinkingEl = null; }
   async function askAI() {
     const msg = MSG_INPUT.value.trim();
     if (!msg) return;
@@ -693,18 +939,15 @@
       addMsgToChat(data.reply || "No response.", "ai");
     } catch(err) {
       hideThinking();
-      let errMsg = "❌ Backend error. Make sure backend is deployed.";
-      if (err.name === "AbortError") errMsg = "⏰ Request timeout.";
+      let errMsg = " Backend error.";
+      if (err.name === "AbortError") errMsg = " Timeout.";
       addMsgToChat(errMsg, "ai");
     } finally {
       MSG_INPUT.disabled = false;
       MSG_INPUT.focus();
     }
   }
-
-  MSG_INPUT.addEventListener("keypress", (e) => {
-    if (e.key === "Enter") askAI();
-  });
+  MSG_INPUT.addEventListener("keypress", (e) => { if (e.key === "Enter") askAI(); });
   window.addEventListener("click", (e) => {
     if (!AI_BOX.contains(e.target) && e.target !== AI_BTN && AI_BOX.style.display === "flex") {
       AI_BOX.style.display = "none";
