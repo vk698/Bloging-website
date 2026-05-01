@@ -26,6 +26,16 @@ app.post("/api/blog", async (req, res) => {
     res.status(500).json({ error: "Error saving blog" });
   }
 });
+// GET - Fetch all blogs (latest first)
+app.get("/api/blog", async (req, res) => {
+  try {
+    const blogs = await Blog.find().sort({ createdAt: -1 });
+    res.json(blogs);
+  } catch (error) {
+    console.error("Error fetching blogs:", error);
+    res.status(500).json({ error: "Error fetching blogs" });
+  }
+});
 
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok", time: new Date().toISOString() });
