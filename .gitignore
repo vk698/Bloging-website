@@ -33,3 +33,4 @@ ai_backend.py
 # Backup files
 *.bak
 *.tmp
+.env

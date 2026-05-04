@@ -109,7 +109,7 @@ app.post("/api/auth/forgot-password", async (req, res) => {
     user.resetPasswordExpires = Date.now() + 3600000;
     await user.save();
 
-    const resetUrl = `https://vk698.github.io/iblog/reset-password.html?token=${token}`;
+    const resetUrl = `https://vk698.github.io/Bloging-website/reset-password.html?token=${token}`;
     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
     const msg = {
       to: user.email,
@@ -212,7 +212,7 @@ app.post("/api/ask-ai", async (req, res) => {
     res.json({ reply });
   } catch (error) {
     console.error("Groq API error:", error);
-    res.status(500).json({ reply: "AI service error. Please try again later." });
+    res.status(500).json({ error: "AI service error" });
   }
 });
 
