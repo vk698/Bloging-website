@@ -2,7 +2,6 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const nodemailer = require("nodemailer");
 const Groq = require("groq-sdk");
 require("dotenv").config();
 const mongoose = require("mongoose");
@@ -10,6 +9,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const crypto = require("crypto");
+const sgMail = require('@sendgrid/mail');
 
 const User = require("./user");
 
@@ -103,24 +103,21 @@ app.post("/api/auth/forgot-password", async (req, res) => {
     const { email } = req.body;
     const user = await User.findOne({ email });
     if (!user) return res.status(404).json({ error: "No account with that email" });
+
     const token = crypto.randomBytes(32).toString("hex");
     user.resetPasswordToken = token;
     user.resetPasswordExpires = Date.now() + 3600000;
     await user.save();
+
     const resetUrl = `https://vk698.github.io/iblog/reset-password.html?token=${token}`;
-    let transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.EMAIL,
-        pass: process.env.PASSWORD,
-      },
-    });
-    const mailOptions = {
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+    const msg = {
       to: user.email,
+      from: process.env.FROM_EMAIL,
       subject: "iBlog - Password Reset",
       html: `<p>You requested a password reset. Click <a href="${resetUrl}">here</a> to reset your password. This link expires in 1 hour.</p>`,
     };
-    await transporter.sendMail(mailOptions);
+    await sgMail.send(msg);
     res.json({ message: "Reset email sent" });
   } catch (error) {
     console.error(error);
@@ -212,30 +209,6 @@ app.post("/api/ask-ai", async (req, res) => {
   } catch (error) {
     console.error("Groq API error:", error);
     res.status(500).json({ reply: "AI service error. Please try again later." });
-  }
-});
-
-app.post("/send-message", async (req, res) => {
-  const { name, email, phone, message } = req.body;
-  let transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.EMAIL,
-      pass: process.env.PASSWORD,
-    },
-  });
-  let mailOptions = {
-    from: email,
-    to: process.env.EMAIL,
-    subject: "New Contact Form Message",
-    text: `Name: ${name}\nEmail: ${email}\nPhone: ${phone}\nMessage: ${message}`,
-  };
-  try {
-    await transporter.sendMail(mailOptions);
-    res.json({ success: true });
-  } catch (error) {
-    console.error(error);
-    res.json({ success: false, error });
   }
 });
 
