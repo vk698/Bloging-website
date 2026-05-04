@@ -115,7 +115,11 @@ app.post("/api/auth/forgot-password", async (req, res) => {
       to: user.email,
       from: process.env.FROM_EMAIL,
       subject: "iBlog - Password Reset",
-      html: `<p>You requested a password reset. Click <a href="${resetUrl}">here</a> to reset your password. This link expires in 1 hour.</p>`,
+      text: `You requested a password reset. Please copy and paste this link into your browser:\n\n${resetUrl}\n\nThis link expires in 1 hour.`,
+      html: `<p>You requested a password reset. Click <a href="${resetUrl}">here</a> to reset your password.</p>
+             <p>If the button doesn't work, copy and paste this link into your browser:</p>
+             <p>${resetUrl}</p>
+             <p>This link expires in 1 hour.</p>`,
     };
     await sgMail.send(msg);
     res.json({ message: "Reset email sent" });
