@@ -9,6 +9,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
+const crypto = require("crypto");
 
 const User = require("./user");
 
@@ -94,6 +95,55 @@ app.put("/api/auth/update", authenticateToken, upload.single("profilePicture"), 
     res.json(user);
   } catch (error) {
     res.status(500).json({ error: "Update failed" });
+  }
+});
+
+app.post("/api/auth/forgot-password", async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ error: "No account with that email" });
+    const token = crypto.randomBytes(32).toString("hex");
+    user.resetPasswordToken = token;
+    user.resetPasswordExpires = Date.now() + 3600000;
+    await user.save();
+    const resetUrl = `https://vk698.github.io/iblog/reset-password.html?token=${token}`;
+    let transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL,
+        pass: process.env.PASSWORD,
+      },
+    });
+    const mailOptions = {
+      to: user.email,
+      subject: "iBlog - Password Reset",
+      html: `<p>You requested a password reset. Click <a href="${resetUrl}">here</a> to reset your password. This link expires in 1 hour.</p>`,
+    };
+    await transporter.sendMail(mailOptions);
+    res.json({ message: "Reset email sent" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to send reset email" });
+  }
+});
+
+app.post("/api/auth/reset-password", async (req, res) => {
+  try {
+    const { token, newPassword } = req.body;
+    const user = await User.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpires: { $gt: Date.now() },
+    });
+    if (!user) return res.status(400).json({ error: "Invalid or expired token" });
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    user.resetPasswordToken = "";
+    user.resetPasswordExpires = null;
+    await user.save();
+    res.json({ message: "Password updated. You can now login." });
+  } catch (error) {
+    res.status(500).json({ error: "Reset failed" });
   }
 });
 

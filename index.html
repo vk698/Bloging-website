@@ -3,18 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover" />
-  <title>iBlog – Heaven for Bloggers</title>
-  <meta name="description" content="iBlog – share your stories, discover ideas, and connect with readers. Free blogging platform with AI assistant and community blogs." />
+  <title>iBlog - Heaven for Bloggers</title>
+  <meta name="description" content="iBlog - share your stories, discover ideas, and connect with readers. Free blogging platform with AI assistant and community blogs." />
   <meta name="keywords" content="blog, write, publish, stories, iBlog, studyhub, education, learning" />
   <meta name="author" content="iBlog Team" />
-  <meta property="og:title" content="iBlog – Heaven for Bloggers" />
+  <meta property="og:title" content="iBlog - Heaven for Bloggers" />
   <meta property="og:description" content="Write, share, and explore amazing blogs. Join our community of writers." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://vk698.github.io/iblog/" />
   <meta property="og:image" content="https://vk698.github.io/iblog/img/logo.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="iBlog – Heaven for Bloggers" />
-  <meta name="twitter:description" content="Your voice matters – publish your stories and learn from others." />
+  <meta name="twitter:title" content="iBlog - Heaven for Bloggers" />
+  <meta name="twitter:description" content="Your voice matters - publish your stories and learn from others." />
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
   <link rel="stylesheet" href="css/utils.css" />
@@ -822,8 +822,8 @@
       addMsgToChat(data.reply || "No response from AI.", "ai");
     } catch (err) {
       hideThinking();
-      let errMsg = "❌ Backend error. Make sure backend is deployed.";
-      if (err.name === "AbortError") errMsg = "⏰ Request timeout.";
+      let errMsg = " Backend error. Make sure backend is deployed.";
+      if (err.name === "AbortError") errMsg = " Request timeout.";
       addMsgToChat(errMsg, "ai");
     } finally {
       MSG_INPUT.disabled = false;
